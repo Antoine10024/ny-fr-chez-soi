@@ -14,16 +14,133 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      listings: {
+        Row: {
+          author_email: string
+          author_name: string
+          contact_label: string | null
+          contact_type: Database["public"]["Enums"]["contact_type"]
+          contact_value: string
+          created_at: string
+          description: string
+          end_date: string
+          housing_type: Database["public"]["Enums"]["housing_type"]
+          id: string
+          moderation_token: string
+          neighborhood: string
+          photos: string[]
+          practical_info: string | null
+          start_date: string
+          status: Database["public"]["Enums"]["listing_status"]
+          summary: string
+        }
+        Insert: {
+          author_email: string
+          author_name: string
+          contact_label?: string | null
+          contact_type: Database["public"]["Enums"]["contact_type"]
+          contact_value: string
+          created_at?: string
+          description: string
+          end_date: string
+          housing_type: Database["public"]["Enums"]["housing_type"]
+          id?: string
+          moderation_token?: string
+          neighborhood: string
+          photos?: string[]
+          practical_info?: string | null
+          start_date: string
+          status?: Database["public"]["Enums"]["listing_status"]
+          summary: string
+        }
+        Update: {
+          author_email?: string
+          author_name?: string
+          contact_label?: string | null
+          contact_type?: Database["public"]["Enums"]["contact_type"]
+          contact_value?: string
+          created_at?: string
+          description?: string
+          end_date?: string
+          housing_type?: Database["public"]["Enums"]["housing_type"]
+          id?: string
+          moderation_token?: string
+          neighborhood?: string
+          photos?: string[]
+          practical_info?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["listing_status"]
+          summary?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      public_listings: {
+        Row: {
+          author_name: string | null
+          contact_label: string | null
+          contact_type: Database["public"]["Enums"]["contact_type"] | null
+          contact_value: string | null
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          housing_type: Database["public"]["Enums"]["housing_type"] | null
+          id: string | null
+          neighborhood: string | null
+          photos: string[] | null
+          practical_info: string | null
+          start_date: string | null
+          summary: string | null
+        }
+        Insert: {
+          author_name?: string | null
+          contact_label?: string | null
+          contact_type?: Database["public"]["Enums"]["contact_type"] | null
+          contact_value?: string | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          housing_type?: Database["public"]["Enums"]["housing_type"] | null
+          id?: string | null
+          neighborhood?: string | null
+          photos?: string[] | null
+          practical_info?: string | null
+          start_date?: string | null
+          summary?: string | null
+        }
+        Update: {
+          author_name?: string | null
+          contact_label?: string | null
+          contact_type?: Database["public"]["Enums"]["contact_type"] | null
+          contact_value?: string | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          housing_type?: Database["public"]["Enums"]["housing_type"] | null
+          id?: string | null
+          neighborhood?: string | null
+          photos?: string[] | null
+          practical_info?: string | null
+          start_date?: string | null
+          summary?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      contact_type:
+        | "email"
+        | "whatsapp"
+        | "facebook"
+        | "instagram"
+        | "telegram"
+        | "autre"
+      housing_type: "chambre" | "studio" | "1-bed" | "2-bed" | "autre"
+      listing_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +267,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      contact_type: [
+        "email",
+        "whatsapp",
+        "facebook",
+        "instagram",
+        "telegram",
+        "autre",
+      ],
+      housing_type: ["chambre", "studio", "1-bed", "2-bed", "autre"],
+      listing_status: ["pending", "approved", "rejected"],
+    },
   },
 } as const
