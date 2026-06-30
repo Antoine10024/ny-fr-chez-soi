@@ -3,7 +3,22 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 
-type PublicListing = Database["public"]["Views"]["public_listings"]["Row"];
+export interface ListingDTO {
+  id: string;
+  created_at: string;
+  author_name: string;
+  contact_type: string;
+  contact_value: string;
+  contact_label: string | null;
+  neighborhood: string;
+  housing_type: string;
+  start_date: string;
+  end_date: string;
+  summary: string;
+  description: string;
+  practical_info: string | null;
+  photos: string[];
+}
 
 function serverClient() {
   return createClient<Database>(
@@ -13,26 +28,43 @@ function serverClient() {
   );
 }
 
+async function signOne(p: string): Promise<string> {
+  if (/^https?:\/\//.test(p)) return p;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin.storage
+    .from("listing-photos")
+    .createSignedUrl(p, 60 * 60 * 24 * 7);
+  return data?.signedUrl ?? "";
+}
+
 async function resolvePhotos(photos: string[] | null): Promise<string[]> {
   if (!photos || photos.length === 0) return [];
   const out: string[] = [];
-  let admin: Awaited<ReturnType<typeof import("@/integrations/supabase/client.server")>>["supabaseAdmin"] | null = null;
   for (const p of photos) {
     if (!p) continue;
-    if (/^https?:\/\//.test(p)) {
-      out.push(p);
-      continue;
-    }
-    if (!admin) {
-      const mod = await import("@/integrations/supabase/client.server");
-      admin = mod.supabaseAdmin;
-    }
-    const { data } = await admin.storage
-      .from("listing-photos")
-      .createSignedUrl(p, 60 * 60 * 24 * 7);
-    if (data?.signedUrl) out.push(data.signedUrl);
+    const url = await signOne(p);
+    if (url) out.push(url);
   }
   return out;
+}
+
+function asListing(row: Record<string, unknown>): ListingDTO {
+  return {
+    id: row.id as string,
+    created_at: row.created_at as string,
+    author_name: (row.author_name as string) ?? "",
+    contact_type: (row.contact_type as string) ?? "email",
+    contact_value: (row.contact_value as string) ?? "",
+    contact_label: (row.contact_label as string | null) ?? null,
+    neighborhood: (row.neighborhood as string) ?? "",
+    housing_type: (row.housing_type as string) ?? "autre",
+    start_date: row.start_date as string,
+    end_date: row.end_date as string,
+    summary: (row.summary as string) ?? "",
+    description: (row.description as string) ?? "",
+    practical_info: (row.practical_info as string | null) ?? null,
+    photos: (row.photos as string[] | null) ?? [],
+  };
 }
 
 export const listListings = createServerFn({ method: "GET" }).handler(async () => {
@@ -42,30 +74,19 @@ export const listListings = createServerFn({ method: "GET" }).handler(async () =
     .select("*")
     .order("start_date", { ascending: true });
   if (error) throw new Error(error.message);
-  const rows = (data ?? []) as PublicListing[];
+  const rows = (data ?? []).map((r) => asListing(r as Record<string, unknown>));
   // Only resolve first photo for the listing grid
   return await Promise.all(
     rows.map(async (r) => ({
       ...r,
-      photos: r.photos && r.photos.length > 0 ? [await firstPhoto(r.photos)] : [],
+      photos: r.photos.length > 0 ? [await signOne(r.photos[0])] : [],
     })),
   );
 });
 
-async function firstPhoto(photos: string[]): Promise<string> {
-  const first = photos[0];
-  if (!first) return "";
-  if (/^https?:\/\//.test(first)) return first;
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { data } = await supabaseAdmin.storage
-    .from("listing-photos")
-    .createSignedUrl(first, 60 * 60 * 24 * 7);
-  return data?.signedUrl ?? "";
-}
-
 export const getListing = createServerFn({ method: "GET" })
   .inputValidator((input: { id: string }) => z.object({ id: z.string().uuid() }).parse(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data }): Promise<ListingDTO | null> => {
     const supabase = serverClient();
     const { data: row, error } = await supabase
       .from("public_listings")
@@ -74,8 +95,9 @@ export const getListing = createServerFn({ method: "GET" })
       .maybeSingle();
     if (error) throw new Error(error.message);
     if (!row) return null;
-    const photos = await resolvePhotos(row.photos);
-    return { ...row, photos };
+    const listing = asListing(row as Record<string, unknown>);
+    listing.photos = await resolvePhotos(listing.photos);
+    return listing;
   });
 
 const submitSchema = z.object({
@@ -119,9 +141,8 @@ export const submitListing = createServerFn({ method: "POST" })
       .single();
     if (error) throw new Error(error.message);
 
-    // Log moderation link (will be emailed once email domain is configured)
     console.log(
-      `[moderation] new listing ${row.id} — approve token: ${row.moderation_token}`,
+      `[moderation] new listing ${row.id} — token: ${row.moderation_token}`,
     );
     return { ok: true as const };
   });
