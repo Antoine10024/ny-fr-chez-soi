@@ -10,7 +10,7 @@ const listingsQuery = queryOptions({
   queryFn: () => listListings(),
 });
 
-export const Route = createFileRoute("/annonces")({
+export const Route = createFileRoute("/annonces/")({
   head: () => ({
     meta: [
       { title: "Annonces de sous-location à NYC — Sous-loc NYC" },
