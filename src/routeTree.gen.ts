@@ -15,6 +15,7 @@ import { Route as AnnoncesIndexRouteImport } from './routes/annonces.index'
 import { Route as ManageTokenRouteImport } from './routes/manage.$token'
 import { Route as AnnoncesIdRouteImport } from './routes/annonces.$id'
 import { Route as ApiPublicAdminRouteImport } from './routes/api/public/admin'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as ApiPublicModerationRejectRouteImport } from './routes/api/public/moderation/reject'
 import { Route as ApiPublicModerationApproveRouteImport } from './routes/api/public/moderation/approve'
 
@@ -48,6 +49,12 @@ const ApiPublicAdminRoute = ApiPublicAdminRouteImport.update({
   path: '/api/public/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicModerationRejectRoute =
   ApiPublicModerationRejectRouteImport.update({
     id: '/api/public/moderation/reject',
@@ -70,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/api/public/admin': typeof ApiPublicAdminRoute
   '/api/public/moderation/approve': typeof ApiPublicModerationApproveRoute
   '/api/public/moderation/reject': typeof ApiPublicModerationRejectRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -80,6 +88,7 @@ export interface FileRoutesByTo {
   '/api/public/admin': typeof ApiPublicAdminRoute
   '/api/public/moderation/approve': typeof ApiPublicModerationApproveRoute
   '/api/public/moderation/reject': typeof ApiPublicModerationRejectRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -91,6 +100,7 @@ export interface FileRoutesById {
   '/api/public/admin': typeof ApiPublicAdminRoute
   '/api/public/moderation/approve': typeof ApiPublicModerationApproveRoute
   '/api/public/moderation/reject': typeof ApiPublicModerationRejectRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
     | '/api/public/admin'
     | '/api/public/moderation/approve'
     | '/api/public/moderation/reject'
+    | '/lovable/email/queue/process'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -113,6 +124,7 @@ export interface FileRouteTypes {
     | '/api/public/admin'
     | '/api/public/moderation/approve'
     | '/api/public/moderation/reject'
+    | '/lovable/email/queue/process'
   id:
     | '__root__'
     | '/'
@@ -123,6 +135,7 @@ export interface FileRouteTypes {
     | '/api/public/admin'
     | '/api/public/moderation/approve'
     | '/api/public/moderation/reject'
+    | '/lovable/email/queue/process'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -134,6 +147,7 @@ export interface RootRouteChildren {
   ApiPublicAdminRoute: typeof ApiPublicAdminRoute
   ApiPublicModerationApproveRoute: typeof ApiPublicModerationApproveRoute
   ApiPublicModerationRejectRoute: typeof ApiPublicModerationRejectRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -180,6 +194,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/moderation/reject': {
       id: '/api/public/moderation/reject'
       path: '/api/public/moderation/reject'
@@ -206,6 +227,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicAdminRoute: ApiPublicAdminRoute,
   ApiPublicModerationApproveRoute: ApiPublicModerationApproveRoute,
   ApiPublicModerationRejectRoute: ApiPublicModerationRejectRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
