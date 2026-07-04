@@ -1,6 +1,12 @@
 import * as React from "react";
 import { render } from "react-email";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { supabaseAdmin as typedAdmin } from "@/integrations/supabase/client.server";
+// Email tables (email_send_log, email_unsubscribe_tokens, suppressed_emails)
+// and the enqueue_email RPC are provisioned by the email infra migration but
+// not yet reflected in the generated Supabase types. Cast to a loose client
+// only within this file to avoid noisy type errors.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const supabaseAdmin = typedAdmin as any;
 import { TEMPLATES } from "@/lib/email-templates/registry";
 import {
   EMAIL_SENDER_DOMAIN,
