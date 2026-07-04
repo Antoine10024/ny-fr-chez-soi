@@ -22,6 +22,7 @@ export type Database = {
           listing_id: string
           start_date: string
           status: Database["public"]["Enums"]["availability_status"]
+          updated_at: string
         }
         Insert: {
           created_at?: string
@@ -30,6 +31,7 @@ export type Database = {
           listing_id: string
           start_date: string
           status?: Database["public"]["Enums"]["availability_status"]
+          updated_at?: string
         }
         Update: {
           created_at?: string
@@ -38,6 +40,7 @@ export type Database = {
           listing_id?: string
           start_date?: string
           status?: Database["public"]["Enums"]["availability_status"]
+          updated_at?: string
         }
         Relationships: [
           {
