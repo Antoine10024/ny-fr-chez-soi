@@ -126,7 +126,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
     }
     setSubmitting(true);
     try {
-      await submit({
+      const res = await submit({
         data: {
           listing_id: listingId,
           visitor_first_name: firstName.trim(),
@@ -136,6 +136,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
           message: message.trim(),
         },
       });
+      setEmailSent(res?.emailSent !== false);
       setDone(true);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Une erreur est survenue.");
@@ -150,9 +151,13 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
         {done ? (
           <>
             <DialogHeader>
-              <DialogTitle className="font-serif text-2xl">Message enregistré</DialogTitle>
+              <DialogTitle className="font-serif text-2xl">
+                {emailSent ? "Message envoyé" : "Demande enregistrée"}
+              </DialogTitle>
               <DialogDescription className="pt-2 text-base">
-                Ton message est prêt. L&apos;envoi des emails sera ajouté dans la prochaine étape.
+                {emailSent
+                  ? "Ton message a bien été envoyé au propriétaire."
+                  : "Ta demande a bien été enregistrée. L'envoi de l'email au propriétaire a rencontré un problème — nous allons le contacter pour toi."}
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>
