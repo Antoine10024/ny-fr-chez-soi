@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as SoumettreRouteImport } from './routes/soumettre'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnnoncesIndexRouteImport } from './routes/annonces.index'
@@ -23,6 +24,11 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as ApiPublicModerationRejectRouteImport } from './routes/api/public/moderation/reject'
 import { Route as ApiPublicModerationApproveRouteImport } from './routes/api/public/moderation/approve'
 
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SoumettreRoute = SoumettreRouteImport.update({
   id: '/soumettre',
   path: '/soumettre',
@@ -97,6 +103,7 @@ const ApiPublicModerationApproveRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/soumettre': typeof SoumettreRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/annonces/$id': typeof AnnoncesIdRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/manage/$token': typeof ManageTokenRoute
@@ -112,6 +119,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/soumettre': typeof SoumettreRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/annonces/$id': typeof AnnoncesIdRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/manage/$token': typeof ManageTokenRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/soumettre': typeof SoumettreRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/annonces/$id': typeof AnnoncesIdRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/manage/$token': typeof ManageTokenRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/soumettre'
+    | '/unsubscribe'
     | '/annonces/$id'
     | '/email/unsubscribe'
     | '/manage/$token'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/soumettre'
+    | '/unsubscribe'
     | '/annonces/$id'
     | '/email/unsubscribe'
     | '/manage/$token'
@@ -175,6 +186,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/soumettre'
+    | '/unsubscribe'
     | '/annonces/$id'
     | '/email/unsubscribe'
     | '/manage/$token'
@@ -191,6 +203,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SoumettreRoute: typeof SoumettreRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
   AnnoncesIdRoute: typeof AnnoncesIdRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ManageTokenRoute: typeof ManageTokenRoute
@@ -206,6 +219,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/soumettre': {
       id: '/soumettre'
       path: '/soumettre'
@@ -303,6 +323,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SoumettreRoute: SoumettreRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
   AnnoncesIdRoute: AnnoncesIdRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ManageTokenRoute: ManageTokenRoute,
