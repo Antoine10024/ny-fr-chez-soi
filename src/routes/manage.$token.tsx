@@ -27,8 +27,8 @@ export const Route = createFileRoute("/manage/$token")({
     ],
   }),
   component: ManagePage,
-  errorComponent: InvalidToken,
-  notFoundComponent: InvalidToken,
+  errorComponent: () => <InvalidToken />,
+  notFoundComponent: () => <InvalidToken />,
 });
 
 function InvalidToken() {
