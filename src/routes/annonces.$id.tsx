@@ -1,12 +1,11 @@
+import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getListing } from "@/lib/listings.functions";
-import {
-  buildContactHref,
-  contactLabel,
-  formatDateRange,
-  housingLabel,
-} from "@/lib/listing-constants";
+import { formatDateRange, housingLabel } from "@/lib/listing-constants";
+import { ContactInquiryDialog } from "@/components/ContactInquiryDialog";
+import { Button } from "@/components/ui/button";
+
 
 const listingQuery = (id: string) =>
   queryOptions({
@@ -51,9 +50,8 @@ export const Route = createFileRoute("/annonces/$id")({
 function ListingDetail() {
   const { id } = Route.useParams();
   const { data: listing } = useSuspenseQuery(listingQuery(id));
+  const [contactOpen, setContactOpen] = useState(false);
   if (!listing) return null;
-
-  const contactHref = buildContactHref(listing.contact_type, listing.contact_value);
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
@@ -144,31 +142,32 @@ function ListingDetail() {
 
         <aside className="md:sticky md:top-24 md:self-start">
           <div className="rounded-2xl border border-border bg-card p-6">
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">
-              Annonce publiée par
+            <p className="font-serif text-xl text-foreground">Contacter le propriétaire</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Envoie directement un message au propriétaire.
             </p>
-            <p className="mt-1 font-serif text-xl text-foreground">{listing.author_name}</p>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Moyen de contact :{" "}
-              <span className="text-foreground">
-                {listing.contact_label || contactLabel(listing.contact_type)}
-              </span>
-            </p>
-            <a
-              href={contactHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 inline-flex w-full items-center justify-center rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+            <Button
+              type="button"
+              onClick={() => setContactOpen(true)}
+              className="mt-5 w-full rounded-full"
+              size="lg"
             >
-              Contacter l&apos;auteur de l&apos;annonce
-            </a>
+              Envoyer un message
+            </Button>
             <p className="mt-4 text-xs leading-relaxed text-muted-foreground">
-              Les échanges se font directement entre vous et l&apos;annonceur, hors du site.
-              Vérifiez bien les conditions de sous-location et de votre bail.
+              Ton message sera transmis au propriétaire, qui pourra te répondre directement.
             </p>
           </div>
         </aside>
       </div>
+
+      <ContactInquiryDialog
+        listingId={listing.id}
+        availabilities={listing.availabilities}
+        open={contactOpen}
+        onOpenChange={setContactOpen}
+      />
     </div>
   );
 }
+

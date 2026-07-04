@@ -225,3 +225,50 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
     };
   });
 
+const inquirySchema = z.object({
+  listing_id: z.string().uuid(),
+  visitor_first_name: z.string().trim().min(1, "Prénom requis").max(80),
+  visitor_email: z.string().trim().email("Email invalide").max(255),
+  start_date: z.string().min(1, "Date d'arrivée requise"),
+  end_date: z.string().min(1, "Date de départ requise"),
+  message: z.string().trim().min(1, "Message requis").max(4000),
+}).refine((v) => v.end_date >= v.start_date, {
+  message: "La date de départ doit être après l'arrivée",
+  path: ["end_date"],
+});
+
+export const createInquiry = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => inquirySchema.parse(input))
+  .handler(async ({ data }) => {
+    const supabase = serverClient();
+    // Verify requested range fits fully within one availability of the approved listing.
+    const { data: avails, error: aErr } = await supabase
+      .from("listing_availabilities")
+      .select("start_date, end_date, status")
+      .eq("listing_id", data.listing_id);
+    if (aErr) throw new Error(aErr.message);
+    const fits = (avails ?? []).some(
+      (a) =>
+        a.status !== "unavailable" &&
+        data.start_date >= a.start_date &&
+        data.end_date <= a.end_date,
+    );
+
+    if (!fits) {
+      throw new Error("Les dates choisies ne sont pas disponibles.");
+    }
+    const { error } = await supabase.from("listing_inquiries").insert({
+      listing_id: data.listing_id,
+      visitor_first_name: data.visitor_first_name,
+      visitor_email: data.visitor_email,
+      start_date: data.start_date,
+      end_date: data.end_date,
+      message: data.message,
+    });
+
+    if (error) throw new Error(error.message);
+    // TODO: send email notification to the owner (next step).
+    return { ok: true as const };
+  });
+
+
