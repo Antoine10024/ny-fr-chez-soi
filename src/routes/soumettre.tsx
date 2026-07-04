@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Plus, Trash2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { submitListing } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { DateRangePicker } from "@/components/DateRangePicker";
 import {
   CONTACT_TYPES,
   HOUSING_TYPES,
@@ -26,6 +28,16 @@ export const Route = createFileRoute("/soumettre")({
   component: SubmitPage,
 });
 
+const availabilitySchema = z
+  .object({
+    start_date: z.string().min(1, "Date de début requise"),
+    end_date: z.string().min(1, "Date de fin requise"),
+  })
+  .refine((v) => v.end_date >= v.start_date, {
+    message: "La date de fin doit être après la date de début",
+    path: ["end_date"],
+  });
+
 const schema = z.object({
   author_name: z.string().trim().min(1, "Votre nom est requis").max(100),
   author_email: z.string().trim().email("Email invalide").max(255),
@@ -34,8 +46,10 @@ const schema = z.object({
   contact_label: z.string().trim().max(60).optional(),
   neighborhood: z.string().trim().min(1, "Choisissez un quartier").max(80),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
-  start_date: z.string().min(1, "Date de début requise"),
-  end_date: z.string().min(1, "Date de fin requise"),
+  availabilities: z
+    .array(availabilitySchema)
+    .min(1, "Ajoutez au moins une période")
+    .max(20, "20 périodes maximum"),
   summary: z
     .string()
     .trim()
@@ -60,6 +74,9 @@ function SubmitPage() {
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -67,8 +84,12 @@ function SubmitPage() {
       contact_type: "whatsapp",
       housing_type: "studio",
       neighborhood: "",
+      availabilities: [{ start_date: "", end_date: "" }],
     },
   });
+
+  const { fields, append, remove } = useFieldArray({ control, name: "availabilities" });
+  const availabilitiesValue = watch("availabilities");
 
   async function handlePhotos(files: FileList | null) {
     if (!files || files.length === 0) return;
@@ -201,14 +222,75 @@ function SubmitPage() {
               </select>
             </FormField>
           </Grid>
-          <Grid>
-            <FormField label="Date de début" error={errors.start_date?.message}>
-              <input type="date" className={inputCls} {...register("start_date")} />
-            </FormField>
-            <FormField label="Date de fin" error={errors.end_date?.message}>
-              <input type="date" className={inputCls} {...register("end_date")} />
-            </FormField>
-          </Grid>
+        </Section>
+
+        <Section
+          title="Périodes de disponibilité"
+          desc="Ajoutez chaque période où le logement est libre. Vous pouvez en ajouter autant que nécessaire."
+        >
+          <div className="space-y-3">
+            {fields.map((field, index) => {
+              const current = availabilitiesValue?.[index];
+              const err = errors.availabilities?.[index];
+              return (
+                <div
+                  key={field.id}
+                  className="flex flex-wrap items-start gap-3 rounded-xl border border-border bg-card p-3"
+                >
+                  <div className="flex-1 min-w-[260px]">
+                    <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Période {index + 1}
+                    </span>
+                    <DateRangePicker
+                      value={{ from: current?.start_date, to: current?.end_date }}
+                      onChange={(v) => {
+                        setValue(`availabilities.${index}.start_date`, v.from ?? "", {
+                          shouldValidate: true,
+                        });
+                        setValue(`availabilities.${index}.end_date`, v.to ?? "", {
+                          shouldValidate: true,
+                        });
+                      }}
+                      placeholder="Choisir les dates"
+                      minDate={new Date()}
+                    />
+                    {err?.start_date?.message ? (
+                      <span className="mt-1 block text-xs text-destructive">
+                        {err.start_date.message}
+                      </span>
+                    ) : null}
+                    {err?.end_date?.message ? (
+                      <span className="mt-1 block text-xs text-destructive">
+                        {err.end_date.message}
+                      </span>
+                    ) : null}
+                  </div>
+                  {fields.length > 1 ? (
+                    <button
+                      type="button"
+                      onClick={() => remove(index)}
+                      aria-label="Supprimer cette période"
+                      className="mt-6 inline-flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+          {errors.availabilities?.message ? (
+            <p className="text-xs text-destructive">{errors.availabilities.message}</p>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => append({ start_date: "", end_date: "" })}
+            disabled={fields.length >= 20}
+            className="inline-flex items-center gap-2 rounded-full border border-dashed border-border bg-card px-4 py-2 text-sm text-foreground transition hover:bg-secondary disabled:opacity-50"
+          >
+            <Plus className="h-4 w-4" />
+            Ajouter une période
+          </button>
         </Section>
 
         <Section title="Description">

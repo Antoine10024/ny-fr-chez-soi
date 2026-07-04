@@ -3,6 +3,13 @@ import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import type { Database } from "@/integrations/supabase/types";
 
+export interface Availability {
+  id?: string;
+  start_date: string;
+  end_date: string;
+  status?: "available" | "booked" | "unavailable";
+}
+
 export interface ListingDTO {
   id: string;
   created_at: string;
@@ -12,12 +19,11 @@ export interface ListingDTO {
   contact_label: string | null;
   neighborhood: string;
   housing_type: string;
-  start_date: string;
-  end_date: string;
   summary: string;
   description: string;
   practical_info: string | null;
   photos: string[];
+  availabilities: Availability[];
 }
 
 function serverClient() {
@@ -49,6 +55,15 @@ async function resolvePhotos(photos: string[] | null): Promise<string[]> {
 }
 
 function asListing(row: Record<string, unknown>): ListingDTO {
+  const raw = (row.availabilities as unknown) ?? [];
+  const availabilities: Availability[] = Array.isArray(raw)
+    ? (raw as Array<Record<string, unknown>>).map((a) => ({
+        id: a.id as string | undefined,
+        start_date: a.start_date as string,
+        end_date: a.end_date as string,
+        status: (a.status as Availability["status"]) ?? "available",
+      }))
+    : [];
   return {
     id: row.id as string,
     created_at: row.created_at as string,
@@ -58,12 +73,11 @@ function asListing(row: Record<string, unknown>): ListingDTO {
     contact_label: (row.contact_label as string | null) ?? null,
     neighborhood: (row.neighborhood as string) ?? "",
     housing_type: (row.housing_type as string) ?? "autre",
-    start_date: row.start_date as string,
-    end_date: row.end_date as string,
     summary: (row.summary as string) ?? "",
     description: (row.description as string) ?? "",
     practical_info: (row.practical_info as string | null) ?? null,
     photos: (row.photos as string[] | null) ?? [],
+    availabilities,
   };
 }
 
@@ -72,10 +86,9 @@ export const listListings = createServerFn({ method: "GET" }).handler(async () =
   const { data, error } = await supabase
     .from("public_listings")
     .select("*")
-    .order("start_date", { ascending: true });
+    .order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   const rows = (data ?? []).map((r) => asListing(r as Record<string, unknown>));
-  // Only resolve first photo for the listing grid
   return await Promise.all(
     rows.map(async (r) => ({
       ...r,
@@ -100,6 +113,16 @@ export const getListing = createServerFn({ method: "GET" })
     return listing;
   });
 
+const availabilitySchema = z
+  .object({
+    start_date: z.string().min(1, "Date de début requise"),
+    end_date: z.string().min(1, "Date de fin requise"),
+  })
+  .refine((v) => v.end_date >= v.start_date, {
+    message: "La date de fin doit être après la date de début",
+    path: ["end_date"],
+  });
+
 const submitSchema = z.object({
   author_name: z.string().trim().min(1).max(100),
   author_email: z.string().trim().email().max(255),
@@ -108,8 +131,7 @@ const submitSchema = z.object({
   contact_label: z.string().trim().max(60).optional().or(z.literal("")),
   neighborhood: z.string().trim().min(1).max(80),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
-  start_date: z.string().min(1),
-  end_date: z.string().min(1),
+  availabilities: z.array(availabilitySchema).min(1, "Ajoutez au moins une période").max(20),
   summary: z.string().trim().min(10).max(240),
   description: z.string().trim().min(20).max(4000),
   practical_info: z.string().trim().max(2000).optional().or(z.literal("")),
@@ -130,8 +152,6 @@ export const submitListing = createServerFn({ method: "POST" })
         contact_label: data.contact_label || null,
         neighborhood: data.neighborhood,
         housing_type: data.housing_type,
-        start_date: data.start_date,
-        end_date: data.end_date,
         summary: data.summary,
         description: data.description,
         practical_info: data.practical_info || null,
@@ -140,6 +160,17 @@ export const submitListing = createServerFn({ method: "POST" })
       .select("id, moderation_token")
       .single();
     if (error) throw new Error(error.message);
+
+    const { error: availErr } = await supabaseAdmin
+      .from("listing_availabilities")
+      .insert(
+        data.availabilities.map((a) => ({
+          listing_id: row.id,
+          start_date: a.start_date,
+          end_date: a.end_date,
+        })),
+      );
+    if (availErr) throw new Error(availErr.message);
 
     console.log(
       `[moderation] new listing ${row.id} — token: ${row.moderation_token}`,

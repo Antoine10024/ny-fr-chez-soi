@@ -6,6 +6,12 @@ function esc(s: string): string {
   );
 }
 
+const dateFmt = new Intl.DateTimeFormat("fr-FR", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
 export const Route = createFileRoute("/api/public/admin")({
   server: {
     handlers: {
@@ -19,7 +25,7 @@ export const Route = createFileRoute("/api/public/admin")({
         const { data, error } = await supabaseAdmin
           .from("listings")
           .select(
-            "id, created_at, author_name, author_email, neighborhood, housing_type, summary, start_date, end_date, moderation_token",
+            "id, created_at, author_name, author_email, neighborhood, housing_type, summary, moderation_token, listing_availabilities(start_date, end_date, status)",
           )
           .eq("status", "pending")
           .order("created_at", { ascending: false });
@@ -27,20 +33,27 @@ export const Route = createFileRoute("/api/public/admin")({
 
         const origin = url.origin;
         const rows = (data ?? [])
-          .map(
-            (r) => `
+          .map((r) => {
+            const periods = (r.listing_availabilities ?? [])
+              .map(
+                (a) =>
+                  `${dateFmt.format(new Date(a.start_date))} → ${dateFmt.format(new Date(a.end_date))}`,
+              )
+              .join(" · ");
+            return `
             <article class="row">
               <header>
                 <strong>${esc(r.summary ?? "")}</strong>
-                <span class="meta">${esc(r.neighborhood ?? "")} · ${esc(r.housing_type ?? "")} · ${esc(r.start_date ?? "")} → ${esc(r.end_date ?? "")}</span>
+                <span class="meta">${esc(r.neighborhood ?? "")} · ${esc(r.housing_type ?? "")}</span>
+                <span class="meta">${esc(periods || "Aucune période")}</span>
               </header>
               <p class="who">Par <b>${esc(r.author_name ?? "")}</b> · ${esc(r.author_email ?? "")}</p>
               <p class="actions">
                 <a class="ok" href="${origin}/api/public/moderation/approve?token=${r.moderation_token}">Approuver</a>
                 <a class="ko" href="${origin}/api/public/moderation/reject?token=${r.moderation_token}">Rejeter</a>
               </p>
-            </article>`,
-          )
+            </article>`;
+          })
           .join("");
 
         const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Modération — Sous-loc NYC</title>

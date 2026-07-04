@@ -101,9 +101,29 @@ function ListingDetail() {
           <h1 className="mt-4 font-serif text-3xl leading-tight text-foreground md:text-4xl">
             {listing.summary}
           </h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            {formatDateRange(listing.start_date, listing.end_date)}
-          </p>
+
+          <section className="mt-6">
+            <h2 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Périodes disponibles
+            </h2>
+            {listing.availabilities.length > 0 ? (
+              <ul className="mt-3 space-y-2">
+                {listing.availabilities.map((a, i) => (
+                  <li
+                    key={a.id ?? i}
+                    className="flex items-center gap-3 rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground"
+                  >
+                    <span className="h-2 w-2 rounded-full bg-primary" />
+                    {formatDateRange(a.start_date, a.end_date)}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-sm italic text-muted-foreground">
+                Dates à préciser avec l&apos;auteur.
+              </p>
+            )}
+          </section>
 
           <section className="mt-8">
             <h2 className="font-serif text-xl text-foreground">Description</h2>

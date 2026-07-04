@@ -1,18 +1,19 @@
 import { Link } from "@tanstack/react-router";
-import { formatDateRange, housingLabel } from "@/lib/listing-constants";
+import { formatShortDateRange, housingLabel } from "@/lib/listing-constants";
+import type { Availability } from "@/lib/listings.functions";
 
 export interface ListingCardData {
   id: string;
   neighborhood: string;
   housing_type: string;
-  start_date: string;
-  end_date: string;
   summary: string;
   photos: string[];
+  availabilities: Availability[];
 }
 
 export function ListingCard({ listing }: { listing: ListingCardData }) {
   const photo = listing.photos[0];
+  const [first, ...rest] = listing.availabilities;
   return (
     <Link
       to="/annonces/$id"
@@ -45,9 +46,21 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
         <p className="font-serif text-lg leading-snug text-foreground">
           {listing.summary}
         </p>
-        <p className="mt-auto text-sm text-muted-foreground">
-          {formatDateRange(listing.start_date, listing.end_date)}
-        </p>
+        <div className="mt-auto text-sm text-muted-foreground">
+          {first ? (
+            <>
+              <span>{formatShortDateRange(first.start_date, first.end_date)}</span>
+              {rest.length > 0 ? (
+                <span className="ml-2 text-xs text-primary">
+                  +{rest.length} autre{rest.length > 1 ? "s" : ""} période
+                  {rest.length > 1 ? "s" : ""}
+                </span>
+              ) : null}
+            </>
+          ) : (
+            <span className="italic">Dates à préciser</span>
+          )}
+        </div>
       </div>
     </Link>
   );

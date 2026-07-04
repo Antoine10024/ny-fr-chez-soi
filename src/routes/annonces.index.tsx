@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { listListings } from "@/lib/listings.functions";
 import { ListingCard } from "@/components/ListingCard";
+import { DateRangePicker, type DateRangeValue } from "@/components/DateRangePicker";
 import { HOUSING_TYPES, NEIGHBORHOODS } from "@/lib/listing-constants";
 
 const listingsQuery = queryOptions({
@@ -29,21 +30,25 @@ function AnnoncesPage() {
   const { data: listings } = useSuspenseQuery(listingsQuery);
   const [neighborhood, setNeighborhood] = useState<string>("");
   const [housing, setHousing] = useState<string>("");
-  const [from, setFrom] = useState<string>("");
-  const [to, setTo] = useState<string>("");
+  const [range, setRange] = useState<DateRangeValue>({});
 
   const filtered = useMemo(() => {
     return listings.filter((l) => {
       if (neighborhood && l.neighborhood !== neighborhood) return false;
       if (housing && l.housing_type !== housing) return false;
-      // overlap test: listing range must overlap [from, to]
-      if (from && l.end_date < from) return false;
-      if (to && l.start_date > to) return false;
+      // Range filter: only apply when BOTH dates are set; keep listings with
+      // at least one availability that fully covers the requested range.
+      if (range.from && range.to) {
+        const ok = l.availabilities.some(
+          (a) => a.start_date <= range.from! && a.end_date >= range.to!,
+        );
+        if (!ok) return false;
+      }
       return true;
     });
-  }, [listings, neighborhood, housing, from, to]);
+  }, [listings, neighborhood, housing, range]);
 
-  const hasFilters = neighborhood || housing || from || to;
+  const hasFilters = neighborhood || housing || range.from || range.to;
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
@@ -64,7 +69,7 @@ function AnnoncesPage() {
       </div>
 
       <div className="sticky top-[72px] z-20 mt-8 rounded-2xl border border-border bg-background/90 p-4 backdrop-blur">
-        <div className="grid gap-3 md:grid-cols-5">
+        <div className="grid gap-3 md:grid-cols-4">
           <Field label="Quartier">
             <select
               value={neighborhood}
@@ -93,20 +98,12 @@ function AnnoncesPage() {
               ))}
             </select>
           </Field>
-          <Field label="Disponible à partir du">
-            <input
-              type="date"
-              value={from}
-              onChange={(e) => setFrom(e.target.value)}
-              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
-            />
-          </Field>
-          <Field label="Jusqu'au">
-            <input
-              type="date"
-              value={to}
-              onChange={(e) => setTo(e.target.value)}
-              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+          <Field label="Arrivée → Départ">
+            <DateRangePicker
+              value={range}
+              onChange={setRange}
+              placeholder="Sélectionner"
+              minDate={new Date()}
             />
           </Field>
           <div className="flex items-end">
@@ -115,8 +112,7 @@ function AnnoncesPage() {
               onClick={() => {
                 setNeighborhood("");
                 setHousing("");
-                setFrom("");
-                setTo("");
+                setRange({});
               }}
               disabled={!hasFilters}
               className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground transition hover:bg-secondary disabled:opacity-50"
@@ -125,6 +121,11 @@ function AnnoncesPage() {
             </button>
           </div>
         </div>
+        {range.from && !range.to ? (
+          <p className="mt-2 text-xs text-muted-foreground">
+            Sélectionnez aussi la date de départ pour filtrer.
+          </p>
+        ) : null}
       </div>
 
       {filtered.length === 0 ? (
