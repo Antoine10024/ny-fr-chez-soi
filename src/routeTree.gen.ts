@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SoumettreRouteImport } from './routes/soumettre'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnnoncesIndexRouteImport } from './routes/annonces.index'
+import { Route as ManageTokenRouteImport } from './routes/manage.$token'
 import { Route as AnnoncesIdRouteImport } from './routes/annonces.$id'
 import { Route as ApiPublicAdminRouteImport } from './routes/api/public/admin'
 import { Route as ApiPublicModerationRejectRouteImport } from './routes/api/public/moderation/reject'
@@ -30,6 +31,11 @@ const IndexRoute = IndexRouteImport.update({
 const AnnoncesIndexRoute = AnnoncesIndexRouteImport.update({
   id: '/annonces/',
   path: '/annonces/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManageTokenRoute = ManageTokenRouteImport.update({
+  id: '/manage/$token',
+  path: '/manage/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnnoncesIdRoute = AnnoncesIdRouteImport.update({
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/soumettre': typeof SoumettreRoute
   '/annonces/$id': typeof AnnoncesIdRoute
+  '/manage/$token': typeof ManageTokenRoute
   '/annonces/': typeof AnnoncesIndexRoute
   '/api/public/admin': typeof ApiPublicAdminRoute
   '/api/public/moderation/approve': typeof ApiPublicModerationApproveRoute
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/soumettre': typeof SoumettreRoute
   '/annonces/$id': typeof AnnoncesIdRoute
+  '/manage/$token': typeof ManageTokenRoute
   '/annonces': typeof AnnoncesIndexRoute
   '/api/public/admin': typeof ApiPublicAdminRoute
   '/api/public/moderation/approve': typeof ApiPublicModerationApproveRoute
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/soumettre': typeof SoumettreRoute
   '/annonces/$id': typeof AnnoncesIdRoute
+  '/manage/$token': typeof ManageTokenRoute
   '/annonces/': typeof AnnoncesIndexRoute
   '/api/public/admin': typeof ApiPublicAdminRoute
   '/api/public/moderation/approve': typeof ApiPublicModerationApproveRoute
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/'
     | '/soumettre'
     | '/annonces/$id'
+    | '/manage/$token'
     | '/annonces/'
     | '/api/public/admin'
     | '/api/public/moderation/approve'
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/'
     | '/soumettre'
     | '/annonces/$id'
+    | '/manage/$token'
     | '/annonces'
     | '/api/public/admin'
     | '/api/public/moderation/approve'
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/'
     | '/soumettre'
     | '/annonces/$id'
+    | '/manage/$token'
     | '/annonces/'
     | '/api/public/admin'
     | '/api/public/moderation/approve'
@@ -117,6 +129,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SoumettreRoute: typeof SoumettreRoute
   AnnoncesIdRoute: typeof AnnoncesIdRoute
+  ManageTokenRoute: typeof ManageTokenRoute
   AnnoncesIndexRoute: typeof AnnoncesIndexRoute
   ApiPublicAdminRoute: typeof ApiPublicAdminRoute
   ApiPublicModerationApproveRoute: typeof ApiPublicModerationApproveRoute
@@ -144,6 +157,13 @@ declare module '@tanstack/react-router' {
       path: '/annonces'
       fullPath: '/annonces/'
       preLoaderRoute: typeof AnnoncesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manage/$token': {
+      id: '/manage/$token'
+      path: '/manage/$token'
+      fullPath: '/manage/$token'
+      preLoaderRoute: typeof ManageTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/annonces/$id': {
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SoumettreRoute: SoumettreRoute,
   AnnoncesIdRoute: AnnoncesIdRoute,
+  ManageTokenRoute: ManageTokenRoute,
   AnnoncesIndexRoute: AnnoncesIndexRoute,
   ApiPublicAdminRoute: ApiPublicAdminRoute,
   ApiPublicModerationApproveRoute: ApiPublicModerationApproveRoute,
