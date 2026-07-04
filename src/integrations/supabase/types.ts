@@ -59,6 +59,60 @@ export type Database = {
           },
         ]
       }
+      listing_inquiries: {
+        Row: {
+          created_at: string
+          end_date: string
+          id: string
+          listing_id: string
+          message: string
+          notified_at: string | null
+          start_date: string
+          updated_at: string
+          visitor_email: string
+          visitor_first_name: string
+        }
+        Insert: {
+          created_at?: string
+          end_date: string
+          id?: string
+          listing_id: string
+          message: string
+          notified_at?: string | null
+          start_date: string
+          updated_at?: string
+          visitor_email: string
+          visitor_first_name: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          listing_id?: string
+          message?: string
+          notified_at?: string | null
+          start_date?: string
+          updated_at?: string
+          visitor_email?: string
+          visitor_first_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_inquiries_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_inquiries_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "public_listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listings: {
         Row: {
           author_email: string
