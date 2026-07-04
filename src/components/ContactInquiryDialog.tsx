@@ -54,6 +54,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
   const [dateError, setDateError] = React.useState<string | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
   const [done, setDone] = React.useState(false);
+  const [emailSent, setEmailSent] = React.useState(true);
 
   const submit = useServerFn(createInquiry);
 
