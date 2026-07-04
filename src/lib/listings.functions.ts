@@ -244,15 +244,16 @@ export const createInquiry = createServerFn({ method: "POST" })
     // Verify requested range fits fully within one availability of the approved listing.
     const { data: avails, error: aErr } = await supabase
       .from("listing_availabilities")
-      .select("start_date, end_date, status, listings!inner(status)")
+      .select("start_date, end_date, status")
       .eq("listing_id", data.listing_id);
     if (aErr) throw new Error(aErr.message);
     const fits = (avails ?? []).some(
       (a) =>
-        (a as { status?: string }).status !== "unavailable" &&
-        data.start_date >= (a as { start_date: string }).start_date &&
-        data.end_date <= (a as { end_date: string }).end_date,
+        a.status !== "unavailable" &&
+        data.start_date >= a.start_date &&
+        data.end_date <= a.end_date,
     );
+
     if (!fits) {
       throw new Error("Les dates choisies ne sont pas disponibles.");
     }
