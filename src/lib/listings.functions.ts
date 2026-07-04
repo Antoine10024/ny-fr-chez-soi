@@ -265,6 +265,7 @@ export const createInquiry = createServerFn({ method: "POST" })
       end_date: data.end_date,
       message: data.message,
     });
+
     if (error) throw new Error(error.message);
     // TODO: send email notification to the owner (next step).
     return { ok: true as const };
