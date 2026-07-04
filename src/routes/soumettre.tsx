@@ -9,7 +9,6 @@ import { submitListing } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { DateRangePicker } from "@/components/DateRangePicker";
 import {
-  CONTACT_TYPES,
   HOUSING_TYPES,
   NEIGHBORHOODS,
 } from "@/lib/listing-constants";
@@ -21,7 +20,7 @@ export const Route = createFileRoute("/soumettre")({
       {
         name: "description",
         content:
-          "Publiez votre annonce de sous-location temporaire à New York en quelques minutes. Validation manuelle avant publication.",
+          "Publie ton annonce de sous-location temporaire à New York en quelques minutes. Validation manuelle avant publication.",
       },
     ],
   }),
@@ -39,21 +38,21 @@ const availabilitySchema = z
   });
 
 const schema = z.object({
-  author_name: z.string().trim().min(1, "Votre nom est requis").max(100),
+  author_name: z.string().trim().min(1, "Ton prénom est requis").max(100),
   author_email: z.string().trim().email("Email invalide").max(255),
-  contact_type: z.enum(["email", "whatsapp", "facebook", "instagram", "telegram", "autre"]),
-  contact_value: z.string().trim().min(1, "Indiquez un contact").max(300),
+  contact_type: z.enum(["email", "whatsapp", "facebook", "instagram", "telegram", "autre"]).default("email"),
+  contact_value: z.string().trim().max(300).default(""),
   contact_label: z.string().trim().max(60).optional(),
-  neighborhood: z.string().trim().min(1, "Choisissez un quartier").max(80),
+  neighborhood: z.string().trim().min(1, "Choisis un quartier").max(80),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
   availabilities: z
     .array(availabilitySchema)
-    .min(1, "Ajoutez au moins une période")
+    .min(1, "Ajoute au moins une période")
     .max(20, "20 périodes maximum"),
   summary: z
     .string()
     .trim()
-    .min(10, "Le résumé doit faire au moins 10 caractères")
+    .min(10, "Le titre doit faire au moins 10 caractères")
     .max(240, "240 caractères maximum"),
   description: z
     .string()
@@ -82,7 +81,9 @@ function SubmitPage() {
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      contact_type: "whatsapp",
+      contact_type: "email",
+      contact_value: "",
+      contact_label: "",
       housing_type: "studio",
       neighborhood: "",
       availabilities: [{ start_date: "", end_date: "" }],
@@ -125,7 +126,9 @@ function SubmitPage() {
       const res = await submit({
         data: {
           ...values,
-          contact_label: values.contact_label || "",
+          contact_type: "email",
+          contact_value: values.author_email,
+          contact_label: "",
           practical_info: values.practical_info || "",
           photos,
         },
@@ -213,43 +216,11 @@ function SubmitPage() {
         Soumettre une annonce
       </h1>
       <p className="mt-3 text-muted-foreground">
-        Ça prend 2-3 minutes. Votre annonce sera publiée après une relecture rapide
+        Ça prend 2-3 minutes. Ton annonce sera publiée après une relecture rapide
         par un modérateur.
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-10 space-y-10">
-        <Section title="Vous" desc="Comment vous joindre — votre email reste privé.">
-          <Grid>
-            <FormField label="Votre nom" error={errors.author_name?.message}>
-              <input className={inputCls} {...register("author_name")} />
-            </FormField>
-            <FormField label="Votre email (privé)" error={errors.author_email?.message}>
-              <input type="email" className={inputCls} {...register("author_email")} />
-            </FormField>
-          </Grid>
-          <Grid>
-            <FormField label="Moyen de contact public" error={errors.contact_type?.message}>
-              <select className={inputCls} {...register("contact_type")}>
-                {CONTACT_TYPES.map((c) => (
-                  <option key={c.value} value={c.value}>
-                    {c.label}
-                  </option>
-                ))}
-              </select>
-            </FormField>
-            <FormField
-              label="Valeur du contact"
-              hint="ex. +13475550100, votre.email@…, https://facebook.com/…"
-              error={errors.contact_value?.message}
-            >
-              <input className={inputCls} {...register("contact_value")} />
-            </FormField>
-          </Grid>
-          <FormField label="Étiquette du contact (optionnel)" hint="ex. 'WhatsApp en soirée'">
-            <input className={inputCls} {...register("contact_label")} />
-          </FormField>
-        </Section>
-
         <Section title="Logement">
           <Grid>
             <FormField label="Quartier" error={errors.neighborhood?.message}>
@@ -275,8 +246,8 @@ function SubmitPage() {
         </Section>
 
         <Section
-          title="Périodes de disponibilité"
-          desc="Ajoutez chaque période où le logement est libre. Vous pouvez en ajouter autant que nécessaire."
+          title="Disponibilités"
+          desc="Ajoute une ou plusieurs périodes pendant lesquelles ton logement est disponible."
         >
           <div className="space-y-3">
             {fields.map((field, index) => {
@@ -343,26 +314,7 @@ function SubmitPage() {
           </button>
         </Section>
 
-        <Section title="Description">
-          <FormField
-            label="Résumé court"
-            hint="Une phrase qui apparaîtra sur la carte de l'annonce (max 240 caractères)."
-            error={errors.summary?.message}
-          >
-            <input className={inputCls} {...register("summary")} />
-          </FormField>
-          <FormField label="Description détaillée" error={errors.description?.message}>
-            <textarea rows={6} className={inputCls} {...register("description")} />
-          </FormField>
-          <FormField
-            label="Informations pratiques (optionnel)"
-            hint="Wifi, lave-linge, vélo, animaux, étage…"
-          >
-            <textarea rows={3} className={inputCls} {...register("practical_info")} />
-          </FormField>
-        </Section>
-
-        <Section title="Photos" desc="Jusqu'à 10 photos, 8 Mo max chacune.">
+        <Section title="Photos" desc="Jusqu'à 10 photos.">
           <input
             type="file"
             accept="image/*"
@@ -381,6 +333,40 @@ function SubmitPage() {
           ) : null}
         </Section>
 
+        <Section title="Description">
+          <FormField
+            label="Titre"
+            hint="Une phrase qui apparaîtra sur la carte de l'annonce (ex : Studio lumineux dans l'UWS)."
+            error={errors.summary?.message}
+          >
+            <input className={inputCls} {...register("summary")} />
+          </FormField>
+          <FormField label="Description" error={errors.description?.message}>
+            <textarea rows={6} className={inputCls} {...register("description")} />
+          </FormField>
+          <FormField
+            label="Informations pratiques (optionnel)"
+            hint="Wifi, lave-linge, vélo, animaux, étage…"
+          >
+            <textarea rows={3} className={inputCls} {...register("practical_info")} />
+          </FormField>
+        </Section>
+
+        <Section title="Toi" desc="Comment te joindre — ton email reste privé.">
+          <Grid>
+            <FormField label="Prénom" error={errors.author_name?.message}>
+              <input className={inputCls} {...register("author_name")} />
+            </FormField>
+            <FormField
+              label="Ton email"
+              hint="Il ne sera jamais affiché publiquement. Il servira uniquement à t'envoyer ton lien de gestion et les demandes de contact."
+              error={errors.author_email?.message}
+            >
+              <input type="email" className={inputCls} {...register("author_email")} />
+            </FormField>
+          </Grid>
+        </Section>
+
         {serverError ? (
           <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm text-destructive">
             {serverError}
@@ -389,7 +375,7 @@ function SubmitPage() {
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-6">
           <p className="text-xs text-muted-foreground">
-            En publiant, vous confirmez avoir le droit de sous-louer ce logement.
+            En publiant, tu confirmes avoir le droit de sous-louer ce logement.
           </p>
           <button
             type="submit"
