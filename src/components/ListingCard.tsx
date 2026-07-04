@@ -13,7 +13,8 @@ export interface ListingCardData {
 
 export function ListingCard({ listing }: { listing: ListingCardData }) {
   const photo = listing.photos[0];
-  const [first, ...rest] = listing.availabilities;
+  const shown = listing.availabilities.slice(0, 3);
+  const extra = listing.availabilities.length - shown.length;
   return (
     <Link
       to="/annonces/$id"
@@ -47,16 +48,20 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
           {listing.summary}
         </p>
         <div className="mt-auto text-sm text-muted-foreground">
-          {first ? (
-            <>
-              <span>{formatShortDateRange(first.start_date, first.end_date)}</span>
-              {rest.length > 0 ? (
-                <span className="ml-2 text-xs text-primary">
-                  +{rest.length} autre{rest.length > 1 ? "s" : ""} période
-                  {rest.length > 1 ? "s" : ""}
-                </span>
+          {shown.length > 0 ? (
+            <ul className="space-y-1">
+              {shown.map((a, i) => (
+                <li key={a.id ?? i} className="flex items-center gap-2">
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+                  <span>{formatShortDateRange(a.start_date, a.end_date)}</span>
+                </li>
+              ))}
+              {extra > 0 ? (
+                <li className="pl-3.5 text-xs italic text-primary">
+                  … et {extra} autre{extra > 1 ? "s" : ""} période{extra > 1 ? "s" : ""}
+                </li>
               ) : null}
-            </>
+            </ul>
           ) : (
             <span className="italic">Dates à préciser</span>
           )}
