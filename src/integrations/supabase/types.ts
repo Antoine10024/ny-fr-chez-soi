@@ -70,6 +70,7 @@ export type Database = {
           description: string
           housing_type: Database["public"]["Enums"]["housing_type"]
           id: string
+          management_token: string
           moderation_token: string
           neighborhood: string
           photos: string[]
@@ -87,6 +88,7 @@ export type Database = {
           description: string
           housing_type: Database["public"]["Enums"]["housing_type"]
           id?: string
+          management_token?: string
           moderation_token?: string
           neighborhood: string
           photos?: string[]
@@ -104,6 +106,7 @@ export type Database = {
           description?: string
           housing_type?: Database["public"]["Enums"]["housing_type"]
           id?: string
+          management_token?: string
           moderation_token?: string
           neighborhood?: string
           photos?: string[]
