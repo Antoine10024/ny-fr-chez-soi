@@ -1,12 +1,11 @@
+import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getListing } from "@/lib/listings.functions";
-import {
-  buildContactHref,
-  contactLabel,
-  formatDateRange,
-  housingLabel,
-} from "@/lib/listing-constants";
+import { formatDateRange, housingLabel } from "@/lib/listing-constants";
+import { ContactInquiryDialog } from "@/components/ContactInquiryDialog";
+import { Button } from "@/components/ui/button";
+
 
 const listingQuery = (id: string) =>
   queryOptions({
