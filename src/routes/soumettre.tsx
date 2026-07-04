@@ -68,8 +68,9 @@ function SubmitPage() {
   const submit = useServerFn(submitListing);
   const [photos, setPhotos] = useState<string[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [done, setDone] = useState(false);
+  const [managementToken, setManagementToken] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const {
     register,
@@ -121,7 +122,7 @@ function SubmitPage() {
   async function onSubmit(values: FormValues) {
     setServerError(null);
     try {
-      await submit({
+      const res = await submit({
         data: {
           ...values,
           contact_label: values.contact_label || "",
@@ -129,33 +130,82 @@ function SubmitPage() {
           photos,
         },
       });
-      setDone(true);
+      setManagementToken(res.management_token);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
       setServerError(e instanceof Error ? e.message : "Une erreur est survenue");
     }
   }
 
-  if (done) {
+  if (managementToken) {
+    const manageUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/manage/${managementToken}`
+        : `/manage/${managementToken}`;
+    async function copy() {
+      try {
+        await navigator.clipboard.writeText(manageUrl);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      } catch {
+        /* noop */
+      }
+    }
     return (
-      <div className="mx-auto max-w-2xl px-5 py-24 text-center">
-        <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-          ✓
-        </span>
-        <h1 className="mt-6 font-serif text-3xl text-foreground">Merci&nbsp;!</h1>
-        <p className="mt-3 text-muted-foreground">
-          Votre annonce a bien été reçue. Elle est <strong>en attente de validation</strong> et
-          sera publiée dès qu&apos;un modérateur l&apos;aura relue.
-        </p>
-        <Link
-          to="/annonces"
-          className="mt-8 inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-        >
-          Voir les annonces
-        </Link>
+      <div className="mx-auto max-w-2xl px-5 py-20">
+        <div className="text-center">
+          <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+            ✓
+          </span>
+          <h1 className="mt-6 font-serif text-3xl text-foreground">Merci&nbsp;!</h1>
+          <p className="mt-3 text-muted-foreground">
+            Ton annonce est <strong>en attente de validation</strong> et sera publiée
+            après une relecture rapide.
+          </p>
+        </div>
+
+        <div className="mt-10 rounded-2xl border border-primary/30 bg-primary/5 p-6">
+          <h2 className="font-serif text-xl text-foreground">Ton lien de gestion</h2>
+          <p className="mt-2 text-sm text-foreground/90">
+            Conserve ce lien précieusement. Il te permettra de modifier ou supprimer
+            ton annonce. Nous te l&apos;enverrons également par email dans une prochaine
+            étape.
+          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <input
+              readOnly
+              value={manageUrl}
+              onFocus={(e) => e.currentTarget.select()}
+              className="flex-1 min-w-[240px] rounded-lg border border-border bg-background px-3 py-2 font-mono text-xs text-foreground"
+            />
+            <button
+              type="button"
+              onClick={copy}
+              className="rounded-full bg-primary px-4 py-2 text-xs font-medium text-primary-foreground transition hover:bg-primary/90"
+            >
+              {copied ? "Copié !" : "Copier le lien"}
+            </button>
+            <a
+              href={manageUrl}
+              className="rounded-full border border-border px-4 py-2 text-xs font-medium text-foreground transition hover:bg-secondary"
+            >
+              Ouvrir
+            </a>
+          </div>
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <Link
+            to="/annonces"
+            className="text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
+          >
+            Voir toutes les annonces
+          </Link>
+        </div>
       </div>
     );
   }
+
 
   return (
     <div className="mx-auto max-w-3xl px-5 py-12">
