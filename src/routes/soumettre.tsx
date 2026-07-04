@@ -40,8 +40,8 @@ const availabilitySchema = z
 const schema = z.object({
   author_name: z.string().trim().min(1, "Ton prénom est requis").max(100),
   author_email: z.string().trim().email("Email invalide").max(255),
-  contact_type: z.enum(["email", "whatsapp", "facebook", "instagram", "telegram", "autre"]).default("email"),
-  contact_value: z.string().trim().max(300).default(""),
+  contact_type: z.enum(["email", "whatsapp", "facebook", "instagram", "telegram", "autre"]),
+  contact_value: z.string().trim().max(300),
   contact_label: z.string().trim().max(60).optional(),
   neighborhood: z.string().trim().min(1, "Choisis un quartier").max(80),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
