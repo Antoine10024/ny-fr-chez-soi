@@ -157,7 +157,7 @@ export const submitListing = createServerFn({ method: "POST" })
         practical_info: data.practical_info || null,
         photos: data.photos,
       })
-      .select("id, moderation_token")
+      .select("id, moderation_token, management_token")
       .single();
     if (error) throw new Error(error.message);
 
@@ -175,5 +175,53 @@ export const submitListing = createServerFn({ method: "POST" })
     console.log(
       `[moderation] new listing ${row.id} — token: ${row.moderation_token}`,
     );
-    return { ok: true as const };
+    return { ok: true as const, management_token: row.management_token as string };
   });
+
+export interface ManagedListingDTO extends ListingDTO {
+  status: "pending" | "approved" | "rejected";
+  author_email: string;
+}
+
+export const getListingByManagementToken = createServerFn({ method: "GET" })
+  .inputValidator((input: { token: string }) =>
+    z.object({ token: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data }): Promise<ManagedListingDTO | null> => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: row, error } = await supabaseAdmin
+      .from("listings")
+      .select(
+        "id, created_at, status, author_name, author_email, contact_type, contact_value, contact_label, neighborhood, housing_type, summary, description, practical_info, photos, listing_availabilities(id, start_date, end_date, status)",
+      )
+      .eq("management_token", data.token)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!row) return null;
+    const availabilities: Availability[] = (row.listing_availabilities ?? [])
+      .map((a) => ({
+        id: a.id,
+        start_date: a.start_date,
+        end_date: a.end_date,
+        status: a.status,
+      }))
+      .sort((a, b) => a.start_date.localeCompare(b.start_date));
+    return {
+      id: row.id,
+      created_at: row.created_at,
+      status: row.status,
+      author_name: row.author_name,
+      author_email: row.author_email,
+      contact_type: row.contact_type,
+      contact_value: row.contact_value,
+      contact_label: row.contact_label,
+      neighborhood: row.neighborhood,
+      housing_type: row.housing_type,
+      summary: row.summary,
+      description: row.description,
+      practical_info: row.practical_info,
+      photos: await resolvePhotos(row.photos ?? []),
+      availabilities,
+    };
+  });
+
