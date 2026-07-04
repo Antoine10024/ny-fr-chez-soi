@@ -240,7 +240,6 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={5}
-                placeholder="Présente-toi en quelques mots et pose tes questions."
                 required
               />
             </section>
