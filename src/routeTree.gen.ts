@@ -13,8 +13,12 @@ import { Route as SoumettreRouteImport } from './routes/soumettre'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnnoncesIndexRouteImport } from './routes/annonces.index'
 import { Route as ManageTokenRouteImport } from './routes/manage.$token'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as AnnoncesIdRouteImport } from './routes/annonces.$id'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as ApiPublicAdminRouteImport } from './routes/api/public/admin'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as ApiPublicModerationRejectRouteImport } from './routes/api/public/moderation/reject'
 import { Route as ApiPublicModerationApproveRouteImport } from './routes/api/public/moderation/approve'
@@ -39,9 +43,19 @@ const ManageTokenRoute = ManageTokenRouteImport.update({
   path: '/manage/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnnoncesIdRoute = AnnoncesIdRouteImport.update({
   id: '/annonces/$id',
   path: '/annonces/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicAdminRoute = ApiPublicAdminRouteImport.update({
@@ -49,6 +63,18 @@ const ApiPublicAdminRoute = ApiPublicAdminRouteImport.update({
   path: '/api/public/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -72,35 +98,47 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/soumettre': typeof SoumettreRoute
   '/annonces/$id': typeof AnnoncesIdRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/manage/$token': typeof ManageTokenRoute
   '/annonces/': typeof AnnoncesIndexRoute
   '/api/public/admin': typeof ApiPublicAdminRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/moderation/approve': typeof ApiPublicModerationApproveRoute
   '/api/public/moderation/reject': typeof ApiPublicModerationRejectRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/soumettre': typeof SoumettreRoute
   '/annonces/$id': typeof AnnoncesIdRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/manage/$token': typeof ManageTokenRoute
   '/annonces': typeof AnnoncesIndexRoute
   '/api/public/admin': typeof ApiPublicAdminRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/moderation/approve': typeof ApiPublicModerationApproveRoute
   '/api/public/moderation/reject': typeof ApiPublicModerationRejectRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/soumettre': typeof SoumettreRoute
   '/annonces/$id': typeof AnnoncesIdRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/manage/$token': typeof ManageTokenRoute
   '/annonces/': typeof AnnoncesIndexRoute
   '/api/public/admin': typeof ApiPublicAdminRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/api/public/moderation/approve': typeof ApiPublicModerationApproveRoute
   '/api/public/moderation/reject': typeof ApiPublicModerationRejectRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -108,46 +146,62 @@ export interface FileRouteTypes {
     | '/'
     | '/soumettre'
     | '/annonces/$id'
+    | '/email/unsubscribe'
     | '/manage/$token'
     | '/annonces/'
     | '/api/public/admin'
+    | '/lovable/email/suppression'
     | '/api/public/moderation/approve'
     | '/api/public/moderation/reject'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/soumettre'
     | '/annonces/$id'
+    | '/email/unsubscribe'
     | '/manage/$token'
     | '/annonces'
     | '/api/public/admin'
+    | '/lovable/email/suppression'
     | '/api/public/moderation/approve'
     | '/api/public/moderation/reject'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
   id:
     | '__root__'
     | '/'
     | '/soumettre'
     | '/annonces/$id'
+    | '/email/unsubscribe'
     | '/manage/$token'
     | '/annonces/'
     | '/api/public/admin'
+    | '/lovable/email/suppression'
     | '/api/public/moderation/approve'
     | '/api/public/moderation/reject'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SoumettreRoute: typeof SoumettreRoute
   AnnoncesIdRoute: typeof AnnoncesIdRoute
+  EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   ManageTokenRoute: typeof ManageTokenRoute
   AnnoncesIndexRoute: typeof AnnoncesIndexRoute
   ApiPublicAdminRoute: typeof ApiPublicAdminRoute
+  LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiPublicModerationApproveRoute: typeof ApiPublicModerationApproveRoute
   ApiPublicModerationRejectRoute: typeof ApiPublicModerationRejectRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
+  LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -180,6 +234,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManageTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/annonces/$id': {
       id: '/annonces/$id'
       path: '/annonces/$id'
@@ -187,11 +248,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnnoncesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/admin': {
       id: '/api/public/admin'
       path: '/api/public/admin'
       fullPath: '/api/public/admin'
       preLoaderRoute: typeof ApiPublicAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lovable/email/queue/process': {
@@ -222,12 +304,16 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SoumettreRoute: SoumettreRoute,
   AnnoncesIdRoute: AnnoncesIdRoute,
+  EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   ManageTokenRoute: ManageTokenRoute,
   AnnoncesIndexRoute: AnnoncesIndexRoute,
   ApiPublicAdminRoute: ApiPublicAdminRoute,
+  LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiPublicModerationApproveRoute: ApiPublicModerationApproveRoute,
   ApiPublicModerationRejectRoute: ApiPublicModerationRejectRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
+  LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
