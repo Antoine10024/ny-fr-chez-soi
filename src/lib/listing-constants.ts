@@ -72,9 +72,24 @@ export function buildContactHref(type: string, value: string): string {
   }
 }
 
+const longFmt = new Intl.DateTimeFormat("fr-FR", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+const shortFmt = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" });
+
 export function formatDateRange(start: string, end: string): string {
-  const s = new Date(start);
-  const e = new Date(end);
-  const fmt = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short", year: "numeric" });
-  return `Du ${fmt.format(s)} au ${fmt.format(e)}`;
+  return `Du ${longFmt.format(new Date(start))} au ${longFmt.format(new Date(end))}`;
+}
+
+export function formatShortDateRange(start: string, end: string): string {
+  return `${shortFmt.format(new Date(start))} → ${shortFmt.format(new Date(end))}`;
+}
+
+export function formatISODate(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
