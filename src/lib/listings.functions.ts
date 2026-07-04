@@ -257,18 +257,62 @@ export const createInquiry = createServerFn({ method: "POST" })
     if (!fits) {
       throw new Error("Les dates choisies ne sont pas disponibles.");
     }
-    const { error } = await supabase.from("listing_inquiries").insert({
-      listing_id: data.listing_id,
-      visitor_first_name: data.visitor_first_name,
-      visitor_email: data.visitor_email,
-      start_date: data.start_date,
-      end_date: data.end_date,
-      message: data.message,
-    });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: inquiry, error } = await supabaseAdmin
+      .from("listing_inquiries")
+      .insert({
+        listing_id: data.listing_id,
+        visitor_first_name: data.visitor_first_name,
+        visitor_email: data.visitor_email,
+        start_date: data.start_date,
+        end_date: data.end_date,
+        message: data.message,
+      })
+      .select("id")
+      .single();
 
     if (error) throw new Error(error.message);
-    // TODO: send email notification to the owner (next step).
-    return { ok: true as const };
+
+    // Fetch owner email and listing context (server-only — never exposed to the visitor).
+    const { data: listing } = await supabaseAdmin
+      .from("listings")
+      .select("author_email, summary, neighborhood")
+      .eq("id", data.listing_id)
+      .eq("status", "approved")
+      .maybeSingle();
+
+    if (!listing?.author_email) {
+      // Inquiry is recorded; surface a soft failure so the UI can inform the visitor.
+      return { ok: true as const, emailSent: false as const };
+    }
+
+    try {
+      const { sendTemplatedEmail } = await import("@/lib/email/send.server");
+      const fmt = (iso: string) => {
+        const [y, m, d] = iso.split("-");
+        return `${d}/${m}/${y}`;
+      };
+      await sendTemplatedEmail({
+        templateName: "inquiry-notification",
+        to: listing.author_email,
+        replyTo: data.visitor_email,
+        idempotencyKey: `inquiry-${inquiry.id}`,
+        bcc: true,
+        templateData: {
+          visitorFirstName: data.visitor_first_name,
+          visitorEmail: data.visitor_email,
+          startDate: fmt(data.start_date),
+          endDate: fmt(data.end_date),
+          message: data.message,
+          listingSummary: listing.summary,
+          listingNeighborhood: listing.neighborhood,
+        },
+      });
+      return { ok: true as const, emailSent: true as const };
+    } catch (err) {
+      console.error("Failed to send inquiry notification", err);
+      return { ok: true as const, emailSent: false as const };
+    }
   });
 
 
