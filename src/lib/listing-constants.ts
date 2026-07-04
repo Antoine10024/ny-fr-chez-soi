@@ -26,7 +26,7 @@ export const HOUSING_TYPES = [
   { value: "studio", label: "Studio" },
   { value: "1-bed", label: "1-bed (1 chambre)" },
   { value: "2-bed", label: "2-bed (2 chambres)" },
-  { value: "autre", label: "Autre" },
+  { value: "autre", label: "3-bedroom et +" },
 ] as const;
 
 export const CONTACT_TYPES = [
