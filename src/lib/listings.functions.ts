@@ -426,7 +426,11 @@ export const createInquiry = createServerFn({ method: "POST" })
       .from("listing_availabilities")
       .select("start_date, end_date, status")
       .eq("listing_id", data.listing_id);
-    if (aErr) throw new Error(aErr.message);
+    if (aErr) {
+      console.error("[listings] createInquiry availabilities lookup failed", { listing_id: data.listing_id, error: aErr });
+      throw new Error("Impossible d'envoyer ton message pour le moment. Merci de réessayer.");
+    }
+
     const fits = (avails ?? []).some(
       (a) =>
         a.status !== "unavailable" &&
