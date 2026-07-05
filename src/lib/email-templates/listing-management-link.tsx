@@ -76,7 +76,7 @@ const Email = ({
 }: ListingManagementLinkProps) => (
   <Html lang="fr" dir="ltr">
     <Head />
-    <Preview>Ton lien de gestion pour ton annonce sur NY Fr Chez Soi</Preview>
+    <Preview>Ton lien de gestion pour ton annonce sur Logements NYC</Preview>
     <Body style={main}>
       <Container style={container}>
         <Heading style={heading}>Ton annonce a bien été enregistrée</Heading>

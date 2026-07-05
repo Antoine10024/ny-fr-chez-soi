@@ -21,8 +21,8 @@ export const Route = createFileRoute("/annonces/$id")({
   },
   head: ({ loaderData }) => {
     const title = loaderData
-      ? `${loaderData.summary} — Sous-loc NYC`
-      : "Annonce — Sous-loc NYC";
+      ? `${loaderData.summary} — Logements NYC`
+      : "Annonce — Logements NYC";
     return {
       meta: [
         { title },

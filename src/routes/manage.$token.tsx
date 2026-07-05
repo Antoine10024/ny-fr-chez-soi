@@ -45,7 +45,7 @@ export const Route = createFileRoute("/manage/$token")({
   },
   head: () => ({
     meta: [
-      { title: "Gestion de mon annonce — Sous-loc NYC" },
+      { title: "Gestion de mon annonce — Logements NYC" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

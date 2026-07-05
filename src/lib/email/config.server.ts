@@ -26,7 +26,7 @@ export const INQUIRY_FROM_ADDRESS =
   process.env.INQUIRY_FROM_ADDRESS ?? "antoine@notify.smoovehomes.com";
 
 export const INQUIRY_FROM_NAME =
-  process.env.INQUIRY_FROM_NAME ?? "NY Fr Chez Soi";
+  process.env.INQUIRY_FROM_NAME ?? "Logements NYC";
 
 export const INQUIRY_BCC_ADDRESS =
   process.env.INQUIRY_BCC_ADDRESS ?? "antoine@smoovehomes.com";

@@ -4,13 +4,13 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
-        <Link to="/" className="group flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-full bg-primary text-primary-foreground font-serif text-base">
-            F
+        <Link to="/" className="group flex items-baseline gap-1.5">
+          <span className="font-serif text-xl leading-none font-medium text-foreground">
+            Logements
           </span>
-          <span className="font-serif text-lg leading-none">
-            <span className="font-medium">Sous-loc</span>
-            <span className="text-muted-foreground"> · NYC</span>
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" aria-hidden />
+          <span className="font-serif text-xl leading-none text-muted-foreground">
+            NYC
           </span>
         </Link>
         <nav className="flex items-center gap-1 text-sm">

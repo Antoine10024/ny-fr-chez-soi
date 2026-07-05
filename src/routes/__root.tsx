@@ -83,16 +83,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sous-loc NYC — Sous-locations entre Français à New York" },
+      { title: "Logements NYC — Logements entre Français à New York" },
       {
         name: "description",
         content:
-          "Annonces de sous-location temporaire partagées par la communauté française à New York. Outil communautaire, sans commission ni paiement.",
+          "Le site des Français qui cherchent ou proposent un logement à New York. Pas de commission, juste de la mise en relation, 100% gratuit.",
       },
-      { property: "og:title", content: "Sous-loc NYC" },
+      { property: "og:title", content: "Logements NYC" },
       {
         property: "og:description",
-        content: "Annonces de sous-location temporaire entre Français à New York.",
+        content: "Le site des Français qui cherchent ou proposent un logement à New York.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "fr_FR" },

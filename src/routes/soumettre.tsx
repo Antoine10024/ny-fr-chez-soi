@@ -19,7 +19,7 @@ import {
 export const Route = createFileRoute("/soumettre")({
   head: () => ({
     meta: [
-      { title: "Publier une annonce — Sous-loc NYC" },
+      { title: "Publier une annonce — Logements NYC" },
       {
         name: "description",
         content:
