@@ -1,25 +1,77 @@
-export const NEIGHBORHOODS = [
-  "West Village",
-  "East Village",
-  "Lower East Side",
-  "SoHo",
-  "Chelsea",
-  "Midtown",
-  "Upper West Side",
-  "Upper East Side",
-  "Harlem",
-  "Washington Heights",
-  "Williamsburg",
-  "Bushwick",
-  "Greenpoint",
-  "Park Slope",
-  "DUMBO",
-  "Bedford-Stuyvesant",
-  "Astoria",
-  "Long Island City",
-  "Sunnyside",
-  "Autre",
+export const BOROUGHS = [
+  { value: "manhattan", label: "Manhattan" },
+  { value: "brooklyn", label: "Brooklyn" },
+  { value: "queens", label: "Queens" },
+  { value: "new_jersey", label: "New Jersey" },
+  { value: "autre", label: "Autre" },
 ] as const;
+
+export type BoroughValue = (typeof BOROUGHS)[number]["value"];
+
+export const OTHER_NEIGHBORHOOD = "Autre quartier";
+
+export const NEIGHBORHOODS_BY_BOROUGH: Record<BoroughValue, readonly string[]> = {
+  manhattan: [
+    "Upper West Side",
+    "Upper East Side",
+    "Harlem",
+    "Washington Heights / Inwood",
+    "Hell's Kitchen",
+    "Midtown",
+    "Chelsea",
+    "Flatiron / Gramercy",
+    "West Village",
+    "Greenwich Village",
+    "East Village",
+    "SoHo / NoHo / Nolita",
+    "Lower East Side / Chinatown",
+    "Tribeca",
+    "Financial District / Battery Park City",
+    "Murray Hill / Kips Bay",
+    "Roosevelt Island",
+    OTHER_NEIGHBORHOOD,
+  ],
+  brooklyn: [
+    "Williamsburg",
+    "Greenpoint",
+    "DUMBO / Brooklyn Heights",
+    "Downtown Brooklyn",
+    "Fort Greene / Clinton Hill",
+    "Bed-Stuy",
+    "Bushwick",
+    "Park Slope",
+    "Prospect Heights / Crown Heights",
+    "Carroll Gardens / Cobble Hill / Boerum Hill",
+    "Red Hook / Gowanus",
+    "Sunset Park",
+    OTHER_NEIGHBORHOOD,
+  ],
+  queens: [
+    "Long Island City",
+    "Astoria",
+    "Sunnyside / Woodside",
+    "Jackson Heights / Elmhurst",
+    "Forest Hills / Rego Park",
+    "Flushing",
+    "Ridgewood",
+    OTHER_NEIGHBORHOOD,
+  ],
+  new_jersey: [
+    "Jersey City",
+    "Newport",
+    "Hoboken",
+    "Weehawken",
+    "Journal Square",
+    "Exchange Place",
+    OTHER_NEIGHBORHOOD,
+  ],
+  autre: [
+    "Westchester",
+    "Bronx",
+    "Staten Island",
+    OTHER_NEIGHBORHOOD,
+  ],
+};
 
 export const HOUSING_TYPES = [
   { value: "chambre", label: "Chambre" },
@@ -47,6 +99,21 @@ export function housingLabel(value: string): string {
 
 export function contactLabel(value: string): string {
   return CONTACT_TYPES.find((c) => c.value === value)?.label ?? value;
+}
+
+export function boroughLabel(value: string | null | undefined): string {
+  if (!value) return "";
+  return BOROUGHS.find((b) => b.value === value)?.label ?? "";
+}
+
+export function formatLocation(
+  neighborhood: string | null | undefined,
+  borough: string | null | undefined,
+): string {
+  const n = (neighborhood ?? "").trim();
+  const b = boroughLabel(borough);
+  if (n && b) return `${n}, ${b}`;
+  return n || b || "";
 }
 
 export function buildContactHref(type: string, value: string): string {
