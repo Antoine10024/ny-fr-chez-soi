@@ -114,11 +114,11 @@ function AnnoncesPage() {
       {/* Mobile compact filter bar */}
       <div className="sticky top-[64px] z-20 -mx-5 mt-5 border-b border-border bg-background/90 px-5 py-3 backdrop-blur md:hidden">
         <div className="flex items-center gap-2 overflow-x-auto [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden">
-          <MobilePill active={!!category}>
+          <label className={pillClasses(!!category)}>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="absolute inset-0 cursor-pointer opacity-0"
+              className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
               aria-label="Catégorie"
             >
               <option value="">Toutes catégories</option>
@@ -130,7 +130,8 @@ function AnnoncesPage() {
             </select>
             <span className="truncate">{category ? categoryLabelActive : "Catégorie"}</span>
             <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" />
-          </MobilePill>
+          </label>
+
 
           <div className="shrink-0">
             <DateRangePicker
