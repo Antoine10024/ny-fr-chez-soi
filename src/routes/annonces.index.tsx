@@ -31,6 +31,10 @@ const listingsQuery = queryOptions({
   queryFn: () => listListings(),
 });
 
+const searchSchema = z.object({
+  category: z.string().optional(),
+});
+
 export const Route = createFileRoute("/annonces/")({
   head: () => ({
     meta: [
@@ -42,6 +46,7 @@ export const Route = createFileRoute("/annonces/")({
       },
     ],
   }),
+  validateSearch: searchSchema,
   loader: ({ context }) => context.queryClient.ensureQueryData(listingsQuery),
   component: AnnoncesPage,
 });
