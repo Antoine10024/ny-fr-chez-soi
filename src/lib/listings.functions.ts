@@ -278,7 +278,11 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
       )
       .eq("management_token", data.token)
       .maybeSingle();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("[listings] getListingByManagementToken failed", error);
+      throw new Error("Impossible de charger cette annonce.");
+    }
+
     if (!row) return null;
     const availabilities: Availability[] = (row.listing_availabilities ?? [])
       .map((a) => ({
