@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { z } from "zod";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Check, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { listListings } from "@/lib/listings.functions";
@@ -30,6 +31,10 @@ const listingsQuery = queryOptions({
   queryFn: () => listListings(),
 });
 
+const searchSchema = z.object({
+  category: z.string().optional(),
+});
+
 export const Route = createFileRoute("/annonces/")({
   head: () => ({
     meta: [
@@ -41,16 +46,18 @@ export const Route = createFileRoute("/annonces/")({
       },
     ],
   }),
+  validateSearch: searchSchema,
   loader: ({ context }) => context.queryClient.ensureQueryData(listingsQuery),
   component: AnnoncesPage,
 });
 
 function AnnoncesPage() {
   const { data: listings } = useSuspenseQuery(listingsQuery);
+  const search = useSearch({ from: "/annonces/" });
   const [borough, setBorough] = useState<BoroughValue | "">("");
   const [neighborhoods, setNeighborhoods] = useState<string[]>([]);
   const [housing, setHousing] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<string>(search.category ?? "");
   const [range, setRange] = useState<DateRangeValue>({});
 
   const neighborhoodOptions = borough ? NEIGHBORHOODS_BY_BOROUGH[borough] : [];
