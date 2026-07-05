@@ -24,15 +24,24 @@ function Home() {
           <div>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs uppercase tracking-wide text-muted-foreground">
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-              Communauté française à New York
+              Par et pour les Français à New York
             </span>
             <h1 className="mt-5 font-serif text-5xl leading-[1.05] text-foreground md:text-6xl">
-              Sous-locations entre <span className="italic text-primary">Français</span> à NYC
+              Logements <span className="italic text-primary">NYC</span>
             </h1>
-            <p className="mt-5 max-w-xl text-lg text-muted-foreground">
-              Un endroit simple pour publier et trouver des sous-locations temporaires
-              partagées par la communauté française à New York. Pas de commission,
-              pas de réservation en ligne — juste de la mise en relation.
+            <p className="mt-5 max-w-xl font-serif text-xl italic leading-snug text-foreground/85 md:text-2xl">
+              Le site des Français qui cherchent ou proposent un logement à New York.
+            </p>
+            <ul className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+              <li>Pas de commission</li>
+              <li aria-hidden className="text-primary">·</li>
+              <li>Juste de la mise en relation</li>
+              <li aria-hidden className="text-primary">·</li>
+              <li>100% gratuit</li>
+            </ul>
+            <p className="mt-6 max-w-xl text-base text-muted-foreground">
+              Un petit coin d&apos;entraide entre Français à NYC. Tu publies, tu contactes,
+              vous vous arrangez directement — sans intermédiaire.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
