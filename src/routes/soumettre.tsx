@@ -43,9 +43,6 @@ const availabilitySchema = z
 const schema = z.object({
   author_name: z.string().trim().min(1, "Ton prénom est requis").max(100),
   author_email: z.string().trim().email("Email invalide").max(255),
-  contact_type: z.enum(["email", "whatsapp", "facebook", "instagram", "telegram", "autre"]),
-  contact_value: z.string().trim().max(300),
-  contact_label: z.string().trim().max(60).optional(),
   borough: z.enum(["manhattan", "brooklyn", "queens", "new_jersey", "autre"], {
     message: "Choisis un borough",
   }),
@@ -99,9 +96,6 @@ function SubmitPage() {
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      contact_type: "email",
-      contact_value: "",
-      contact_label: "",
       housing_type: "studio",
       borough: undefined as unknown as BoroughValue,
       neighborhood_choice: "",
@@ -156,9 +150,6 @@ function SubmitPage() {
         data: {
           author_name: values.author_name,
           author_email: values.author_email,
-          contact_type: "email",
-          contact_value: values.author_email,
-          contact_label: "",
           borough: values.borough,
           neighborhood,
           housing_type: values.housing_type,

@@ -14,9 +14,6 @@ export interface ListingDTO {
   id: string;
   created_at: string;
   author_name: string;
-  contact_type: string;
-  contact_value: string;
-  contact_label: string | null;
   neighborhood: string;
   borough: string;
   housing_type: string;
@@ -69,9 +66,6 @@ function asListing(row: Record<string, unknown>): ListingDTO {
     id: row.id as string,
     created_at: row.created_at as string,
     author_name: (row.author_name as string) ?? "",
-    contact_type: (row.contact_type as string) ?? "email",
-    contact_value: (row.contact_value as string) ?? "",
-    contact_label: (row.contact_label as string | null) ?? null,
     neighborhood: (row.neighborhood as string) ?? "",
     borough: (row.borough as string) ?? "autre",
     housing_type: (row.housing_type as string) ?? "autre",
@@ -128,9 +122,6 @@ const availabilitySchema = z
 const submitSchema = z.object({
   author_name: z.string().trim().min(1).max(100),
   author_email: z.string().trim().email().max(255),
-  contact_type: z.enum(["email", "whatsapp", "facebook", "instagram", "telegram", "autre"]),
-  contact_value: z.string().trim().min(1).max(300),
-  contact_label: z.string().trim().max(60).optional().or(z.literal("")),
   borough: z.enum(["manhattan", "brooklyn", "queens", "new_jersey", "autre"]),
   neighborhood: z.string().trim().min(1).max(80),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
@@ -151,9 +142,9 @@ export const submitListing = createServerFn({ method: "POST" })
       .insert({
         author_name: data.author_name,
         author_email: data.author_email,
-        contact_type: data.contact_type,
-        contact_value: data.contact_value,
-        contact_label: data.contact_label || null,
+        contact_type: "email",
+        contact_value: data.author_email,
+        contact_label: null,
         borough: data.borough,
         neighborhood: data.neighborhood,
         housing_type: data.housing_type,
@@ -267,7 +258,7 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
     const { data: row, error } = await supabaseAdmin
       .from("listings")
       .select(
-        "id, created_at, status, author_name, author_email, contact_type, contact_value, contact_label, neighborhood, borough, housing_type, summary, description, practical_info, photos, listing_availabilities(id, start_date, end_date, status)",
+        "id, created_at, status, author_name, author_email, neighborhood, borough, housing_type, summary, description, practical_info, photos, listing_availabilities(id, start_date, end_date, status)",
       )
       .eq("management_token", data.token)
       .maybeSingle();
@@ -288,9 +279,6 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
       status: row.status,
       author_name: row.author_name,
       author_email: row.author_email,
-      contact_type: row.contact_type,
-      contact_value: row.contact_value,
-      contact_label: row.contact_label,
       neighborhood: row.neighborhood,
       borough: row.borough,
       housing_type: row.housing_type,
