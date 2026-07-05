@@ -219,6 +219,7 @@ function AnnoncesPage() {
                 setBorough("");
                 setNeighborhoods([]);
                 setHousing("");
+                setCategory("");
                 setRange({});
               }}
               disabled={!hasFilters}
