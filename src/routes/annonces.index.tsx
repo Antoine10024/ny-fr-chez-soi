@@ -101,7 +101,21 @@ function AnnoncesPage() {
       </div>
 
       <div className="sticky top-[72px] z-20 mt-8 rounded-2xl border border-border bg-background/90 p-4 backdrop-blur">
-        <div className="grid gap-3 md:grid-cols-5">
+        <div className="grid gap-3 md:grid-cols-6">
+          <Field label="Catégorie">
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+            >
+              <option value="">Toutes</option>
+              {LISTING_CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </Field>
           <Field label="Borough">
             <select
               value={borough}
