@@ -95,12 +95,6 @@ function AnnoncesPage() {
 
   const categoryLabelActive =
     LISTING_CATEGORIES.find((c) => c.value === category)?.label ?? "Catégorie";
-  const dateLabelActive =
-    range.from && range.to
-      ? "Dates sélectionnées"
-      : range.from
-        ? "Dates (partiel)"
-        : "Dates";
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-8 md:py-12">
