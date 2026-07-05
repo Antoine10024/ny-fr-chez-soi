@@ -1,5 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { formatLocation, formatShortDateRange, housingLabel } from "@/lib/listing-constants";
+import {
+  categoryLabel,
+  formatLocation,
+  formatShortDateRange,
+  housingLabel,
+} from "@/lib/listing-constants";
 import type { Availability } from "@/lib/listings.functions";
 
 export interface ListingCardData {
@@ -7,6 +12,7 @@ export interface ListingCardData {
   neighborhood: string;
   borough: string;
   housing_type: string;
+  category: string;
   summary: string;
   photos: string[];
   availabilities: Availability[];
@@ -44,6 +50,11 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
           <span className="rounded-full border border-border px-2.5 py-1 text-foreground/70">
             {housingLabel(listing.housing_type)}
           </span>
+          {listing.category ? (
+            <span className="rounded-full border border-border bg-secondary px-2.5 py-1 text-foreground/70">
+              {categoryLabel(listing.category)}
+            </span>
+          ) : null}
         </div>
         <p className="font-serif text-lg leading-snug text-foreground">
           {listing.summary}

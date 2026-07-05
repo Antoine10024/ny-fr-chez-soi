@@ -13,6 +13,7 @@ import {
 import {
   BOROUGHS,
   HOUSING_TYPES,
+  LISTING_CATEGORIES,
   NEIGHBORHOODS_BY_BOROUGH,
   type BoroughValue,
 } from "@/lib/listing-constants";
@@ -42,6 +43,7 @@ function AnnoncesPage() {
   const [borough, setBorough] = useState<BoroughValue | "">("");
   const [neighborhoods, setNeighborhoods] = useState<string[]>([]);
   const [housing, setHousing] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
   const [range, setRange] = useState<DateRangeValue>({});
 
   const neighborhoodOptions = borough ? NEIGHBORHOODS_BY_BOROUGH[borough] : [];
@@ -57,6 +59,7 @@ function AnnoncesPage() {
       if (borough && l.borough !== borough) return false;
       if (neighborhoods.length > 0 && !neighborhoods.includes(l.neighborhood)) return false;
       if (housing && l.housing_type !== housing) return false;
+      if (category && l.category !== category) return false;
       if (range.from && range.to) {
         const ok = l.availabilities.some(
           (a) => a.start_date <= range.from! && a.end_date >= range.to!,
@@ -65,10 +68,10 @@ function AnnoncesPage() {
       }
       return true;
     });
-  }, [listings, borough, neighborhoods, housing, range]);
+  }, [listings, borough, neighborhoods, housing, category, range]);
 
   const hasFilters =
-    borough || neighborhoods.length > 0 || housing || range.from || range.to;
+    borough || neighborhoods.length > 0 || housing || category || range.from || range.to;
 
   const neighborhoodLabel =
     neighborhoods.length === 0
@@ -98,7 +101,21 @@ function AnnoncesPage() {
       </div>
 
       <div className="sticky top-[72px] z-20 mt-8 rounded-2xl border border-border bg-background/90 p-4 backdrop-blur">
-        <div className="grid gap-3 md:grid-cols-5">
+        <div className="grid gap-3 md:grid-cols-6">
+          <Field label="Catégorie">
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+            >
+              <option value="">Toutes</option>
+              {LISTING_CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </Field>
           <Field label="Borough">
             <select
               value={borough}
@@ -202,6 +219,7 @@ function AnnoncesPage() {
                 setBorough("");
                 setNeighborhoods([]);
                 setHousing("");
+                setCategory("");
                 setRange({});
               }}
               disabled={!hasFilters}

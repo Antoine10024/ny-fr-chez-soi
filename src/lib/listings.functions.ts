@@ -17,6 +17,7 @@ export interface ListingDTO {
   neighborhood: string;
   borough: string;
   housing_type: string;
+  category: string;
   summary: string;
   description: string;
   practical_info: string | null;
@@ -69,6 +70,7 @@ function asListing(row: Record<string, unknown>): ListingDTO {
     neighborhood: (row.neighborhood as string) ?? "",
     borough: (row.borough as string) ?? "autre",
     housing_type: (row.housing_type as string) ?? "autre",
+    category: (row.category as string) ?? "sejour_temporaire",
     summary: (row.summary as string) ?? "",
     description: (row.description as string) ?? "",
     practical_info: (row.practical_info as string | null) ?? null,
@@ -125,6 +127,7 @@ const submitSchema = z.object({
   borough: z.enum(["manhattan", "brooklyn", "queens", "new_jersey", "autre"]),
   neighborhood: z.string().trim().min(1).max(80),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
+  category: z.enum(["sejour_temporaire", "reprise_bail", "colocation"]),
   availabilities: z.array(availabilitySchema).min(1, "Ajoutez au moins une période").max(20),
   summary: z.string().trim().min(10).max(240),
   description: z.string().trim().min(20).max(4000),
@@ -148,6 +151,7 @@ export const submitListing = createServerFn({ method: "POST" })
         borough: data.borough,
         neighborhood: data.neighborhood,
         housing_type: data.housing_type,
+        category: data.category,
         summary: data.summary,
         description: data.description,
         practical_info: data.practical_info || null,
@@ -258,7 +262,7 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
     const { data: row, error } = await supabaseAdmin
       .from("listings")
       .select(
-        "id, created_at, status, author_name, author_email, neighborhood, borough, housing_type, summary, description, practical_info, photos, listing_availabilities(id, start_date, end_date, status)",
+        "id, created_at, status, author_name, author_email, neighborhood, borough, housing_type, category, summary, description, practical_info, photos, listing_availabilities(id, start_date, end_date, status)",
       )
       .eq("management_token", data.token)
       .maybeSingle();
@@ -282,6 +286,7 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
       neighborhood: row.neighborhood,
       borough: row.borough,
       housing_type: row.housing_type,
+      category: row.category ?? "sejour_temporaire",
       summary: row.summary,
       description: row.description,
       practical_info: row.practical_info,

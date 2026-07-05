@@ -11,6 +11,7 @@ import { DateRangePicker } from "@/components/DateRangePicker";
 import {
   BOROUGHS,
   HOUSING_TYPES,
+  LISTING_CATEGORIES,
   NEIGHBORHOODS_BY_BOROUGH,
   OTHER_NEIGHBORHOOD,
   type BoroughValue,
@@ -43,6 +44,9 @@ const availabilitySchema = z
 const schema = z.object({
   author_name: z.string().trim().min(1, "Ton prénom est requis").max(100),
   author_email: z.string().trim().email("Email invalide").max(255),
+  category: z.enum(["sejour_temporaire", "reprise_bail", "colocation"], {
+    message: "Choisis une catégorie",
+  }),
   borough: z.enum(["manhattan", "brooklyn", "queens", "new_jersey", "autre"], {
     message: "Choisis un borough",
   }),
@@ -97,6 +101,7 @@ function SubmitPage() {
     resolver: zodResolver(schema),
     defaultValues: {
       housing_type: "studio",
+      category: undefined as unknown as FormValues["category"],
       borough: undefined as unknown as BoroughValue,
       neighborhood_choice: "",
       neighborhood_custom: "",
@@ -153,6 +158,7 @@ function SubmitPage() {
           borough: values.borough,
           neighborhood,
           housing_type: values.housing_type,
+          category: values.category,
           availabilities: values.availabilities,
           summary: values.summary,
           description: values.description,
@@ -249,6 +255,19 @@ function SubmitPage() {
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-10 space-y-10">
+        <Section title="Que proposes-tu ?">
+          <FormField label="Catégorie" error={errors.category?.message}>
+            <select className={inputCls} {...register("category")}>
+              <option value="">— Choisir —</option>
+              {LISTING_CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </FormField>
+        </Section>
+
         <Section title="Logement">
           <Grid>
             <FormField label="Borough" error={errors.borough?.message}>
