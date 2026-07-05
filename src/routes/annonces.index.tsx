@@ -77,7 +77,7 @@ function AnnoncesPage() {
     neighborhoods.length === 0
       ? borough
         ? "Tous"
-        : "Choisir un borough"
+        : "Tous"
       : neighborhoods.length === 1
         ? neighborhoods[0]
         : `${neighborhoods.length} quartiers`;
