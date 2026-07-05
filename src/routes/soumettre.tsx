@@ -9,8 +9,11 @@ import { submitListing } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { DateRangePicker } from "@/components/DateRangePicker";
 import {
+  BOROUGHS,
   HOUSING_TYPES,
-  NEIGHBORHOODS,
+  NEIGHBORHOODS_BY_BOROUGH,
+  OTHER_NEIGHBORHOOD,
+  type BoroughValue,
 } from "@/lib/listing-constants";
 
 export const Route = createFileRoute("/soumettre")({
