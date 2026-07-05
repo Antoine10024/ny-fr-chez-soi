@@ -1,9 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { Check, ChevronDown } from "lucide-react";
 import { listListings } from "@/lib/listings.functions";
 import { ListingCard } from "@/components/ListingCard";
 import { DateRangePicker, type DateRangeValue } from "@/components/DateRangePicker";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   BOROUGHS,
   HOUSING_TYPES,
