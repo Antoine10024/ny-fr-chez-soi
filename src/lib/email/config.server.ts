@@ -22,8 +22,9 @@
 
 export const EMAIL_SENDER_DOMAIN = "notify.logements.nyc";
 
-export const INQUIRY_FROM_ADDRESS =
-  process.env.INQUIRY_FROM_ADDRESS ?? "bonjour@logements.nyc";
+// Must be on EMAIL_SENDER_DOMAIN (verified sender subdomain). The env
+// override is intentionally ignored here to prevent sender_domain_mismatch.
+export const INQUIRY_FROM_ADDRESS = "bonjour@notify.logements.nyc";
 
 export const INQUIRY_FROM_NAME =
   process.env.INQUIRY_FROM_NAME ?? "Logements NYC";
