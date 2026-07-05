@@ -473,14 +473,5 @@ function pillClasses(active: boolean) {
   }`;
 }
 
-function MobilePill({
-  active,
-  children,
-}: {
-  active: boolean;
-  children: React.ReactNode;
-}) {
-  return <span className={pillClasses(active)}>{children}</span>;
-}
 
 
