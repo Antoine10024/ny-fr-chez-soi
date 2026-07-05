@@ -56,7 +56,7 @@ export const Route = createFileRoute("/api/public/admin")({
           })
           .join("");
 
-        const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Modération — Sous-loc NYC</title>
+        const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>Modération — Logements NYC</title>
           <meta name="viewport" content="width=device-width,initial-scale=1">
           <style>
             body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#faf6ef;color:#1b1b1f;margin:0;padding:32px;max-width:760px;margin-inline:auto}
