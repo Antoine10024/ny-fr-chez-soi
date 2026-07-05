@@ -85,6 +85,10 @@ const STATUS_LABEL: Record<string, { label: string; className: string }> = {
     label: "Refusée",
     className: "bg-red-100 text-red-800 border-red-200",
   },
+  withdrawn: {
+    label: "Retirée du site",
+    className: "bg-slate-100 text-slate-700 border-slate-200",
+  },
 };
 
 const availabilitySchema = z
