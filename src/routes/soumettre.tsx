@@ -96,9 +96,6 @@ function SubmitPage() {
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      contact_type: "email",
-      contact_value: "",
-      contact_label: "",
       housing_type: "studio",
       borough: undefined as unknown as BoroughValue,
       neighborhood_choice: "",
