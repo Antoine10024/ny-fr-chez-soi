@@ -46,7 +46,11 @@ const schema = z.object({
   contact_type: z.enum(["email", "whatsapp", "facebook", "instagram", "telegram", "autre"]),
   contact_value: z.string().trim().max(300),
   contact_label: z.string().trim().max(60).optional(),
-  neighborhood: z.string().trim().min(1, "Choisis un quartier").max(80),
+  borough: z.enum(["manhattan", "brooklyn", "queens", "new_jersey", "autre"], {
+    message: "Choisis un borough",
+  }),
+  neighborhood_choice: z.string().trim().min(1, "Choisis un quartier").max(80),
+  neighborhood_custom: z.string().trim().max(80).optional(),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
   availabilities: z
     .array(availabilitySchema)
@@ -63,6 +67,17 @@ const schema = z.object({
     .min(20, "La description doit faire au moins 20 caractères")
     .max(4000),
   practical_info: z.string().trim().max(2000).optional(),
+}).superRefine((v, ctx) => {
+  if (v.neighborhood_choice === OTHER_NEIGHBORHOOD) {
+    const custom = (v.neighborhood_custom ?? "").trim();
+    if (custom.length < 2) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["neighborhood_custom"],
+        message: "Précise ton quartier",
+      });
+    }
+  }
 });
 type FormValues = z.infer<typeof schema>;
 
