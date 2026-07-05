@@ -103,10 +103,17 @@ function SubmitPage() {
       contact_value: "",
       contact_label: "",
       housing_type: "studio",
-      neighborhood: "",
+      borough: undefined as unknown as BoroughValue,
+      neighborhood_choice: "",
+      neighborhood_custom: "",
       availabilities: [{ start_date: "", end_date: "" }],
     },
   });
+
+  const borough = watch("borough");
+  const neighborhoodChoice = watch("neighborhood_choice");
+  const neighborhoods = borough ? NEIGHBORHOODS_BY_BOROUGH[borough] : [];
+  const showCustomNeighborhood = neighborhoodChoice === OTHER_NEIGHBORHOOD;
 
   const { fields, append, remove } = useFieldArray({ control, name: "availabilities" });
   const availabilitiesValue = watch("availabilities");
