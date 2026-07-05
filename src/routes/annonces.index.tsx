@@ -467,3 +467,33 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </label>
   );
 }
+
+function SheetField({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </span>
+      {children}
+    </div>
+  );
+}
+
+function pillClasses(active: boolean) {
+  return `relative inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
+    active
+      ? "border-foreground/40 bg-foreground/[0.04] text-foreground"
+      : "border-border bg-background text-foreground/75 hover:border-foreground/30"
+  }`;
+}
+
+function MobilePill({
+  active,
+  children,
+}: {
+  active: boolean;
+  children: React.ReactNode;
+}) {
+  return <span className={pillClasses(active)}>{children}</span>;
+}
+
