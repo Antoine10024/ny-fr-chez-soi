@@ -53,10 +53,11 @@ export const Route = createFileRoute("/annonces/")({
 
 function AnnoncesPage() {
   const { data: listings } = useSuspenseQuery(listingsQuery);
+  const search = useSearch({ from: "/annonces/" });
   const [borough, setBorough] = useState<BoroughValue | "">("");
   const [neighborhoods, setNeighborhoods] = useState<string[]>([]);
   const [housing, setHousing] = useState<string>("");
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<string>(search.category ?? "");
   const [range, setRange] = useState<DateRangeValue>({});
 
   const neighborhoodOptions = borough ? NEIGHBORHOODS_BY_BOROUGH[borough] : [];
