@@ -455,7 +455,11 @@ export const createInquiry = createServerFn({ method: "POST" })
       .select("id")
       .single();
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("[listings] createInquiry insert failed", { listing_id: data.listing_id, error });
+      throw new Error("Impossible d'envoyer ton message pour le moment. Merci de réessayer.");
+    }
+
 
     // Fetch owner email and listing context (server-only — never exposed to the visitor).
     const { data: listing } = await supabaseAdmin
