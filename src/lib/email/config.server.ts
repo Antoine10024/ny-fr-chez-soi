@@ -40,7 +40,7 @@ export const ADMIN_EMAIL_ADDRESS =
  * links). Set SITE_URL in production; the server also falls back to the
  * request Origin header when available.
  */
-export const SITE_URL = process.env.SITE_URL ?? "https://logements.nyc";
+export const SITE_URL = process.env.SITE_URL ?? "https://www.logements.nyc";
 
 export function formatFrom(name: string, address: string): string {
   return `${name} <${address}>`;
