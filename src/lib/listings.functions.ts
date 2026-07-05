@@ -258,7 +258,7 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
     const { data: row, error } = await supabaseAdmin
       .from("listings")
       .select(
-        "id, created_at, status, author_name, author_email, contact_type, contact_value, contact_label, neighborhood, borough, housing_type, summary, description, practical_info, photos, listing_availabilities(id, start_date, end_date, status)",
+        "id, created_at, status, author_name, author_email, neighborhood, borough, housing_type, summary, description, practical_info, photos, listing_availabilities(id, start_date, end_date, status)",
       )
       .eq("management_token", data.token)
       .maybeSingle();
