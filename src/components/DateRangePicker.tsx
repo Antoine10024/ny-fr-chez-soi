@@ -54,7 +54,7 @@ export function DateRangePicker({
           type="button"
           variant="outline"
           className={cn(
-            "w-full justify-start text-left font-normal",
+            "w-full justify-start pl-2 text-left font-normal",
             !value.from && "text-muted-foreground",
             className,
           )}
