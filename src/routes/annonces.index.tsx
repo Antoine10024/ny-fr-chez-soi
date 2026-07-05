@@ -89,16 +89,215 @@ function AnnoncesPage() {
         ? neighborhoods[0]
         : `${neighborhoods.length} quartiers`;
 
+  const advancedCount =
+    (borough ? 1 : 0) + (neighborhoods.length > 0 ? 1 : 0) + (housing ? 1 : 0);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const categoryLabelActive =
+    LISTING_CATEGORIES.find((c) => c.value === category)?.label ?? "Catégorie";
+  const dateLabelActive =
+    range.from && range.to
+      ? "Dates sélectionnées"
+      : range.from
+        ? "Dates (partiel)"
+        : "Dates";
+
   return (
-    <div className="mx-auto max-w-6xl px-5 py-12">
+    <div className="mx-auto max-w-6xl px-5 py-8 md:py-12">
       <div>
-        <h1 className="font-serif text-4xl text-foreground md:text-5xl">Annonces</h1>
-        <p className="mt-2 text-muted-foreground">
+        <h1 className="font-serif text-3xl text-foreground md:text-5xl">Annonces</h1>
+        <p className="mt-2 text-sm text-muted-foreground md:text-base">
           Parcourez les logements proposés par la communauté française à New York, pour un séjour temporaire ou une reprise de bail.
         </p>
       </div>
 
-      <div className="sticky top-[72px] z-20 mt-8 rounded-2xl border border-border bg-background/90 p-4 backdrop-blur">
+      {/* Mobile compact filter bar */}
+      <div className="sticky top-[64px] z-20 -mx-5 mt-5 border-b border-border bg-background/90 px-5 py-3 backdrop-blur md:hidden">
+        <div className="flex items-center gap-2 overflow-x-auto [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden">
+          <MobilePill active={!!category}>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="absolute inset-0 cursor-pointer opacity-0"
+              aria-label="Catégorie"
+            >
+              <option value="">Toutes catégories</option>
+              {LISTING_CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+            <span className="truncate">{category ? categoryLabelActive : "Catégorie"}</span>
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" />
+          </MobilePill>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className={pillClasses(!!range.from)}
+              >
+                <span className="truncate">{dateLabelActive}</span>
+                <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-auto p-0">
+              <DateRangePicker
+                value={range}
+                onChange={setRange}
+                placeholder="Sélectionner"
+                minDate={new Date()}
+                numberOfMonths={1}
+              />
+            </PopoverContent>
+          </Popover>
+
+          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+            <SheetTrigger asChild>
+              <button type="button" className={pillClasses(advancedCount > 0)}>
+                <SlidersHorizontal className="h-3.5 w-3.5" />
+                <span>Filtres</span>
+                {advancedCount > 0 ? (
+                  <span className="grid h-4 min-w-[1rem] place-items-center rounded-full bg-primary px-1 text-[10px] font-medium text-primary-foreground">
+                    {advancedCount}
+                  </span>
+                ) : null}
+              </button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="flex h-[90vh] flex-col gap-0 rounded-t-3xl p-0">
+              <SheetHeader className="border-b border-border px-5 py-4 text-left">
+                <SheetTitle className="font-serif text-xl">Filtres</SheetTitle>
+              </SheetHeader>
+              <div className="flex-1 space-y-6 overflow-y-auto px-5 py-5">
+                <SheetField label="Catégorie">
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm"
+                  >
+                    <option value="">Toutes</option>
+                    {LISTING_CATEGORIES.map((c) => (
+                      <option key={c.value} value={c.value}>
+                        {c.label}
+                      </option>
+                    ))}
+                  </select>
+                </SheetField>
+                <SheetField label="Borough">
+                  <select
+                    value={borough}
+                    onChange={(e) => {
+                      setBorough(e.target.value as BoroughValue | "");
+                      setNeighborhoods([]);
+                    }}
+                    className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm"
+                  >
+                    <option value="">Tous</option>
+                    {BOROUGHS.map((b) => (
+                      <option key={b.value} value={b.value}>
+                        {b.label}
+                      </option>
+                    ))}
+                  </select>
+                </SheetField>
+                <SheetField label="Quartier">
+                  {neighborhoodOptions.length === 0 ? (
+                    <p className="rounded-lg border border-dashed border-border px-3 py-2.5 text-sm text-muted-foreground">
+                      Sélectionne d&apos;abord un borough.
+                    </p>
+                  ) : (
+                    <div className="flex flex-wrap gap-2">
+                      {neighborhoodOptions.map((n) => {
+                        const checked = neighborhoods.includes(n);
+                        return (
+                          <button
+                            key={n}
+                            type="button"
+                            onClick={() => toggleNeighborhood(n)}
+                            className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition ${
+                              checked
+                                ? "border-primary bg-primary text-primary-foreground"
+                                : "border-border bg-background text-foreground/70"
+                            }`}
+                          >
+                            {checked ? <Check className="h-3 w-3" /> : null}
+                            {n}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </SheetField>
+                <SheetField label="Taille">
+                  <select
+                    value={housing}
+                    onChange={(e) => setHousing(e.target.value)}
+                    className="w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm"
+                  >
+                    <option value="">Toutes</option>
+                    {HOUSING_TYPES.map((h) => (
+                      <option key={h.value} value={h.value}>
+                        {h.label}
+                      </option>
+                    ))}
+                  </select>
+                </SheetField>
+                <SheetField label="Dates">
+                  <DateRangePicker
+                    value={range}
+                    onChange={setRange}
+                    placeholder="Sélectionner"
+                    minDate={new Date()}
+                    numberOfMonths={1}
+                  />
+                </SheetField>
+              </div>
+              <div className="flex items-center gap-3 border-t border-border px-5 py-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setBorough("");
+                    setNeighborhoods([]);
+                    setHousing("");
+                    setCategory("");
+                    setRange({});
+                  }}
+                  className="text-sm font-medium text-foreground underline underline-offset-4"
+                >
+                  Réinitialiser
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSheetOpen(false)}
+                  className="ml-auto rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+                >
+                  Voir les annonces
+                </button>
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          {hasFilters ? (
+            <button
+              type="button"
+              onClick={() => {
+                setBorough("");
+                setNeighborhoods([]);
+                setHousing("");
+                setCategory("");
+                setRange({});
+              }}
+              className="shrink-0 text-xs text-muted-foreground underline underline-offset-2"
+            >
+              Réinitialiser
+            </button>
+          ) : null}
+        </div>
+      </div>
+
+      {/* Desktop filters (unchanged) */}
+      <div className="sticky top-[72px] z-20 mt-8 hidden rounded-2xl border border-border bg-background/90 p-4 backdrop-blur md:block">
         <div className="grid gap-3 md:grid-cols-6">
           <Field label="Catégorie">
             <select
