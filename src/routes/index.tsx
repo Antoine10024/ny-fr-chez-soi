@@ -28,7 +28,7 @@ function Home() {
               Logements <span className="italic text-primary">NYC</span>
             </h1>
             <p className="mt-5 max-w-xl font-serif text-xl italic leading-snug text-foreground/85 md:text-2xl">
-              Un espace d'entraide dédié au Français qui cherchent ou proposent un logement à New York - sans intermédiaire.
+              Un espace d'entraide dédié aux Français qui cherchent ou proposent un logement à New York - sans intermédiaire.
             </p>
             <p className="mt-8 text-center font-sans text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
               Trouvez le logement qui vous convient
