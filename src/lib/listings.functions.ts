@@ -142,9 +142,9 @@ export const submitListing = createServerFn({ method: "POST" })
       .insert({
         author_name: data.author_name,
         author_email: data.author_email,
-        contact_type: data.contact_type,
-        contact_value: data.contact_value,
-        contact_label: data.contact_label || null,
+        contact_type: "email",
+        contact_value: data.author_email,
+        contact_label: null,
         borough: data.borough,
         neighborhood: data.neighborhood,
         housing_type: data.housing_type,
