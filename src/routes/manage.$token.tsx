@@ -500,20 +500,9 @@ function ManagePage() {
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Retirer l&apos;annonce du site public ?</AlertDialogTitle>
-                <AlertDialogDescription asChild>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p>
-                      Ton annonce ne s&apos;affichera plus sur la liste publique et ne
-                      recevra plus de nouvelles demandes de contact.
-                    </p>
-                    <p>
-                      <strong className="text-foreground">
-                        Elle ne sera pas supprimée définitivement.
-                      </strong>{" "}
-                      Les photos, les disponibilités et le contenu restent conservés dans
-                      notre base de données. Ton lien de gestion reste valable.
-                    </p>
-                  </div>
+                <AlertDialogDescription className="text-sm text-muted-foreground">
+                  Ton annonce ne s&apos;affichera plus sur la liste publique et ne
+                  recevra plus de nouvelles demandes de contact.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
