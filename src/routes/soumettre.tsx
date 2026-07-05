@@ -148,12 +148,23 @@ function SubmitPage() {
   async function onSubmit(values: FormValues) {
     setServerError(null);
     try {
+      const neighborhood =
+        values.neighborhood_choice === OTHER_NEIGHBORHOOD
+          ? (values.neighborhood_custom ?? "").trim()
+          : values.neighborhood_choice;
       const res = await submit({
         data: {
-          ...values,
+          author_name: values.author_name,
+          author_email: values.author_email,
           contact_type: "email",
           contact_value: values.author_email,
           contact_label: "",
+          borough: values.borough,
+          neighborhood,
+          housing_type: values.housing_type,
+          availabilities: values.availabilities,
+          summary: values.summary,
+          description: values.description,
           practical_info: values.practical_info || "",
           photos,
         },
