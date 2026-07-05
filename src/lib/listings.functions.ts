@@ -141,6 +141,7 @@ const submitSchema = z.object({
 export const submitListing = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => submitSchema.parse(input))
   .handler(async ({ data }) => {
+    const { getRequestHeader } = await import("@tanstack/react-start/server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row, error } = await supabaseAdmin
       .from("listings")
@@ -175,6 +176,39 @@ export const submitListing = createServerFn({ method: "POST" })
     console.log(
       `[moderation] new listing ${row.id} — token: ${row.moderation_token}`,
     );
+
+    // Send the management link email to the owner. Failure must NOT block
+    // listing creation — the confirmation screen still shows the token.
+    try {
+      const { SITE_URL } = await import("@/lib/email/config.server");
+      const origin =
+        SITE_URL ||
+        getRequestHeader("origin") ||
+        (getRequestHeader("host")
+          ? `https://${getRequestHeader("host")}`
+          : "");
+      if (origin) {
+        const { sendTemplatedEmail } = await import("@/lib/email/send.server");
+        const manageUrl = `${origin.replace(/\/$/, "")}/manage/${row.management_token}`;
+        await sendTemplatedEmail({
+          templateName: "listing-management-link",
+          to: data.author_email,
+          idempotencyKey: `listing-mgmt-${row.id}`,
+          templateData: {
+            authorName: data.author_name,
+            listingSummary: data.summary,
+            manageUrl,
+          },
+        });
+      } else {
+        console.warn(
+          "Skipping management email — no origin available to build absolute URL",
+        );
+      }
+    } catch (err) {
+      console.error("Failed to send listing management email", err);
+    }
+
     return { ok: true as const, management_token: row.management_token as string };
   });
 
