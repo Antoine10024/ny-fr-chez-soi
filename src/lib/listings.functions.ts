@@ -388,13 +388,20 @@ export const withdrawListingByManagementToken = createServerFn({ method: "POST" 
       .select("id")
       .eq("management_token", data.token)
       .maybeSingle();
-    if (findErr) throw new Error(findErr.message);
+    if (findErr) {
+      console.error("[listings] withdrawListing lookup failed", findErr);
+      throw new Error("Impossible de retirer l'annonce pour le moment.");
+    }
     if (!existing) throw new Error("Lien de gestion invalide.");
     const { error: updErr } = await supabaseAdmin
       .from("listings")
       .update({ status: "withdrawn" })
       .eq("id", existing.id);
-    if (updErr) throw new Error(updErr.message);
+    if (updErr) {
+      console.error("[listings] withdrawListing update failed", { id: existing.id, error: updErr });
+      throw new Error("Impossible de retirer l'annonce pour le moment.");
+    }
+
     return { ok: true as const };
   });
 
