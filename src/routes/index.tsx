@@ -1,4 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
+import { Luggage, Key } from "lucide-react";
 import brownstoneImg from "@/assets/brownstone.jpg";
 
 export const Route = createFileRoute("/")({
