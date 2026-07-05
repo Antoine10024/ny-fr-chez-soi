@@ -158,6 +158,7 @@ function SubmitPage() {
           borough: values.borough,
           neighborhood,
           housing_type: values.housing_type,
+          category: values.category,
           availabilities: values.availabilities,
           summary: values.summary,
           description: values.description,
