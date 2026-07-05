@@ -16,7 +16,7 @@ import {
 export const Route = createFileRoute("/soumettre")({
   head: () => ({
     meta: [
-      { title: "Soumettre une annonce — Sous-loc NYC" },
+      { title: "Publier une annonce — Sous-loc NYC" },
       {
         name: "description",
         content:
@@ -162,8 +162,9 @@ function SubmitPage() {
           </span>
           <h1 className="mt-6 font-serif text-3xl text-foreground">Merci&nbsp;!</h1>
           <p className="mt-3 text-muted-foreground">
-            Ton annonce est <strong>en attente de validation</strong> et sera publiée
-            après une relecture rapide.
+            Ton annonce a bien été enregistrée&nbsp;: elle est{" "}
+            <strong>en attente de validation</strong> et sera publiée après une
+            relecture rapide.
           </p>
         </div>
 
@@ -213,7 +214,7 @@ function SubmitPage() {
   return (
     <div className="mx-auto max-w-3xl px-5 py-12">
       <h1 className="font-serif text-4xl text-foreground md:text-5xl">
-        Soumettre une annonce
+        Publier une annonce
       </h1>
       <p className="mt-3 text-muted-foreground">
         Ça prend 2-3 minutes. Ton annonce sera publiée après une relecture rapide
@@ -375,7 +376,7 @@ function SubmitPage() {
 
         <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm text-foreground/90">
           Tu pourras modifier ou retirer ton annonce à tout moment. Un lien
-          privé te sera envoyé par email après la soumission.
+          privé te sera envoyé par email une fois ton annonce enregistrée.
         </div>
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-6">
@@ -387,7 +388,7 @@ function SubmitPage() {
             disabled={isSubmitting || uploading}
             className="inline-flex items-center rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 disabled:opacity-60"
           >
-            {isSubmitting ? "Envoi…" : "Envoyer mon annonce"}
+            {isSubmitting ? "Envoi…" : "Publier mon annonce"}
           </button>
         </div>
       </form>

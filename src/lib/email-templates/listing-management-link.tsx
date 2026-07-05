@@ -79,14 +79,14 @@ const Email = ({
     <Preview>Ton lien de gestion pour ton annonce sur NY Fr Chez Soi</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={heading}>Ton annonce a bien été soumise</Heading>
+        <Heading style={heading}>Ton annonce a bien été enregistrée</Heading>
         <Text style={paragraph}>
           {authorName ? `Bonjour ${authorName},` : "Bonjour,"}
         </Text>
         <Text style={paragraph}>
-          Merci d&apos;avoir soumis ton annonce
+          Merci d&apos;avoir publié ton annonce
           {listingSummary ? ` « ${listingSummary} »` : ""}. Elle est en cours
-          de vérification avant d&apos;être publiée.
+          de vérification et sera publiée sur le site après validation.
         </Text>
         <Text style={paragraph}>
           Voici ton lien secret de gestion. Garde-le précieusement : il te
