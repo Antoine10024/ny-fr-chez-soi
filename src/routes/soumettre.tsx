@@ -260,12 +260,20 @@ function SubmitPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="mt-10 space-y-10">
         <Section title="Logement">
           <Grid>
-            <FormField label="Quartier" error={errors.neighborhood?.message}>
-              <select className={inputCls} {...register("neighborhood")}>
+            <FormField label="Borough" error={errors.borough?.message}>
+              <select
+                className={inputCls}
+                {...register("borough", {
+                  onChange: () => {
+                    setValue("neighborhood_choice", "", { shouldValidate: false });
+                    setValue("neighborhood_custom", "", { shouldValidate: false });
+                  },
+                })}
+              >
                 <option value="">— Choisir —</option>
-                {NEIGHBORHOODS.map((n) => (
-                  <option key={n} value={n}>
-                    {n}
+                {BOROUGHS.map((b) => (
+                  <option key={b.value} value={b.value}>
+                    {b.label}
                   </option>
                 ))}
               </select>
@@ -279,6 +287,36 @@ function SubmitPage() {
                 ))}
               </select>
             </FormField>
+          </Grid>
+          <Grid>
+            <FormField label="Quartier" error={errors.neighborhood_choice?.message}>
+              <select
+                className={inputCls}
+                disabled={!borough}
+                {...register("neighborhood_choice")}
+              >
+                <option value="">
+                  {borough ? "— Choisir —" : "Sélectionne d'abord un borough"}
+                </option>
+                {neighborhoods.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+            {showCustomNeighborhood ? (
+              <FormField
+                label="Précise ton quartier"
+                error={errors.neighborhood_custom?.message}
+              >
+                <input
+                  className={inputCls}
+                  placeholder="Ex. Long Island City nord"
+                  {...register("neighborhood_custom")}
+                />
+              </FormField>
+            ) : null}
           </Grid>
         </Section>
 
