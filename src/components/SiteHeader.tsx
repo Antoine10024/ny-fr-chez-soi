@@ -25,7 +25,8 @@ export function SiteHeader() {
             to="/soumettre"
             className="ml-2 inline-flex items-center rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition hover:bg-primary/90"
           >
-            Publier<span className="hidden sm:inline">{' '}une annonce</span>
+            <span className="sm:hidden">Publier</span>
+            <span className="hidden sm:inline">Publier une annonce</span>
           </Link>
         </nav>
       </div>
