@@ -131,6 +131,7 @@ const submitSchema = z.object({
   contact_type: z.enum(["email", "whatsapp", "facebook", "instagram", "telegram", "autre"]),
   contact_value: z.string().trim().min(1).max(300),
   contact_label: z.string().trim().max(60).optional().or(z.literal("")),
+  borough: z.enum(["manhattan", "brooklyn", "queens", "new_jersey", "autre"]),
   neighborhood: z.string().trim().min(1).max(80),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
   availabilities: z.array(availabilitySchema).min(1, "Ajoutez au moins une période").max(20),
