@@ -71,31 +71,31 @@ function Home() {
         </div>
       </section>
 
-      {/* Comment ça marche */}
+      {/* Comment ça fonctionne */}
       <section className="border-t border-border bg-card/40">
         <div className="mx-auto max-w-6xl px-5 py-20">
           <h2 className="font-serif text-3xl text-foreground md:text-4xl">
-            Comment ça marche
+            Comment ça fonctionne
           </h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">
-            Trois étapes, aucun intermédiaire. La communauté publie, la communauté contacte.
+            Trois étapes, sans intermédiaire.
           </p>
           <ol className="mt-10 grid gap-6 md:grid-cols-3">
             {[
               {
                 n: "01",
-                t: "Parcourez les annonces",
-                d: "Filtrez par quartier, type de logement et dates pour trouver ce qui vous correspond.",
+                t: "Trouvez un logement",
+                d: "Parcourez les annonces et filtrez par borough, quartier, type de logement et dates de disponibilité.",
               },
               {
                 n: "02",
-                t: "Contactez directement",
-                d: "Chaque annonce indique le moyen de contact choisi par l'auteur — email, WhatsApp, Facebook…",
+                t: "Contactez le propriétaire",
+                d: "Envoyez votre demande directement depuis le site. Le propriétaire reçoit votre message par email et peut vous répondre en toute confidentialité.",
               },
               {
                 n: "03",
-                t: "Organisez votre séjour",
-                d: "Vous discutez en direct des dates, des conditions et des modalités, hors du site.",
+                t: "Organisez-vous librement",
+                d: "Vous échangez directement avec le propriétaire pour convenir des dates et des modalités de votre location.",
               },
             ].map((s) => (
               <li
@@ -117,11 +117,10 @@ function Home() {
           <div className="grid gap-6 px-8 py-12 md:grid-cols-[1fr_auto] md:items-center md:px-12">
             <div>
               <h2 className="font-serif text-3xl md:text-4xl">
-                Vous quittez NYC quelques semaines&nbsp;?
+                Vous avez un logement disponible&nbsp;?
               </h2>
               <p className="mt-3 max-w-xl text-sm text-accent-foreground/85">
-                Publiez votre annonce en quelques minutes et aidez quelqu&apos;un de la
-                communauté à se loger pendant votre absence.
+                Publiez votre annonce en quelques minutes et proposez votre logement à la communauté française de New York.
               </p>
             </div>
             <Link
