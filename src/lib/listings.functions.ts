@@ -166,7 +166,10 @@ export const submitListing = createServerFn({ method: "POST" })
       })
       .select("id, moderation_token, management_token")
       .single();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("[listings] submitListing insert failed", error);
+      throw new Error("Impossible d'enregistrer votre annonce pour le moment. Merci de réessayer.");
+    }
 
     const { error: availErr } = await supabaseAdmin
       .from("listing_availabilities")
@@ -177,7 +180,11 @@ export const submitListing = createServerFn({ method: "POST" })
           end_date: a.end_date,
         })),
       );
-    if (availErr) throw new Error(availErr.message);
+    if (availErr) {
+      console.error("[listings] submitListing availabilities insert failed", { id: row.id, error: availErr });
+      throw new Error("Impossible d'enregistrer les disponibilités. Merci de réessayer.");
+    }
+
 
     console.log(`[listings] new listing submitted: ${row.id}`);
 
