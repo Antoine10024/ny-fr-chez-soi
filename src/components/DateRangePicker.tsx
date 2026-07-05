@@ -28,6 +28,13 @@ function isoToDate(v?: string): Date | undefined {
   return new Date(y, m - 1, d);
 }
 
+function toValue(r: DateRange | undefined): DateRangeValue {
+  return {
+    from: r?.from ? formatISODate(r.from) : undefined,
+    to: r?.to ? formatISODate(r.to) : undefined,
+  };
+}
+
 export function DateRangePicker({
   value,
   onChange,
@@ -36,9 +43,19 @@ export function DateRangePicker({
   minDate,
   className,
 }: Props) {
-  const range: DateRange | undefined = value.from
-    ? { from: isoToDate(value.from), to: isoToDate(value.to) }
-    : undefined;
+  const [open, setOpen] = React.useState(false);
+  const [draft, setDraft] = React.useState<DateRange | undefined>(
+    value.from ? { from: isoToDate(value.from), to: isoToDate(value.to) } : undefined,
+  );
+
+  // Sync draft when popover opens or external value changes
+  React.useEffect(() => {
+    if (open) {
+      setDraft(
+        value.from ? { from: isoToDate(value.from), to: isoToDate(value.to) } : undefined,
+      );
+    }
+  }, [open, value.from, value.to]);
 
   const label =
     value.from && value.to
@@ -47,8 +64,19 @@ export function DateRangePicker({
         ? `À partir du ${formatShortDateRange(value.from, value.from).split(" → ")[0]}`
         : placeholder;
 
+  const apply = () => {
+    onChange(toValue(draft));
+    setOpen(false);
+  };
+
+  const reset = () => {
+    setDraft(undefined);
+    onChange({});
+    setOpen(false);
+  };
+
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           type="button"
@@ -66,29 +94,30 @@ export function DateRangePicker({
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
           mode="range"
-          selected={range}
-          onSelect={(r) => {
-            onChange({
-              from: r?.from ? formatISODate(r.from) : undefined,
-              to: r?.to ? formatISODate(r.to) : undefined,
-            });
-          }}
+          selected={draft}
+          onSelect={(r) => setDraft(r)}
           numberOfMonths={numberOfMonths}
           disabled={minDate ? { before: minDate } : undefined}
           initialFocus
           className={cn("pointer-events-auto p-3")}
         />
-        {value.from ? (
-          <div className="flex justify-end border-t border-border px-3 py-2">
-            <button
-              type="button"
-              onClick={() => onChange({})}
-              className="text-xs text-muted-foreground hover:text-foreground"
-            >
-              Réinitialiser
-            </button>
-          </div>
-        ) : null}
+        <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2">
+          <button
+            type="button"
+            onClick={reset}
+            className="text-xs text-muted-foreground hover:text-foreground"
+          >
+            Réinitialiser
+          </button>
+          <Button
+            type="button"
+            size="sm"
+            onClick={apply}
+            disabled={!draft?.from}
+          >
+            Valider
+          </Button>
+        </div>
       </PopoverContent>
     </Popover>
   );
