@@ -85,7 +85,10 @@ export const listListings = createServerFn({ method: "GET" }).handler(async () =
     .from("public_listings")
     .select("*")
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("[listings] listListings failed", error);
+    throw new Error("Impossible de charger les annonces pour le moment.");
+  }
   const rows = (data ?? []).map((r) => asListing(r as Record<string, unknown>));
   return await Promise.all(
     rows.map(async (r) => ({
@@ -104,12 +107,16 @@ export const getListing = createServerFn({ method: "GET" })
       .select("*")
       .eq("id", data.id)
       .maybeSingle();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("[listings] getListing failed", { id: data.id, error });
+      throw new Error("Impossible de charger cette annonce.");
+    }
     if (!row) return null;
     const listing = asListing(row as Record<string, unknown>);
     listing.photos = await resolvePhotos(listing.photos);
     return listing;
   });
+
 
 const availabilitySchema = z
   .object({
