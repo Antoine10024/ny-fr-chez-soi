@@ -81,24 +81,10 @@ export const HOUSING_TYPES = [
   { value: "autre", label: "3-bedroom et +" },
 ] as const;
 
-export const CONTACT_TYPES = [
-  { value: "email", label: "Email" },
-  { value: "whatsapp", label: "WhatsApp" },
-  { value: "facebook", label: "Facebook" },
-  { value: "instagram", label: "Instagram" },
-  { value: "telegram", label: "Telegram" },
-  { value: "autre", label: "Autre" },
-] as const;
-
 export type HousingType = (typeof HOUSING_TYPES)[number]["value"];
-export type ContactType = (typeof CONTACT_TYPES)[number]["value"];
 
 export function housingLabel(value: string): string {
   return HOUSING_TYPES.find((h) => h.value === value)?.label ?? value;
-}
-
-export function contactLabel(value: string): string {
-  return CONTACT_TYPES.find((c) => c.value === value)?.label ?? value;
 }
 
 export function boroughLabel(value: string | null | undefined): string {
@@ -116,28 +102,6 @@ export function formatLocation(
   return n || b || "";
 }
 
-export function buildContactHref(type: string, value: string): string {
-  switch (type) {
-    case "email":
-      return `mailto:${value}`;
-    case "whatsapp": {
-      const digits = value.replace(/[^\d]/g, "");
-      return `https://wa.me/${digits}`;
-    }
-    case "facebook":
-      return value.startsWith("http") ? value : `https://facebook.com/${value.replace(/^@/, "")}`;
-    case "instagram":
-      return value.startsWith("http")
-        ? value
-        : `https://instagram.com/${value.replace(/^@/, "")}`;
-    case "telegram":
-      return value.startsWith("http")
-        ? value
-        : `https://t.me/${value.replace(/^@/, "")}`;
-    default:
-      return value.startsWith("http") ? value : `mailto:${value}`;
-  }
-}
 
 const longFmt = new Intl.DateTimeFormat("fr-FR", {
   day: "numeric",
