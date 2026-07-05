@@ -14,9 +14,6 @@ export interface ListingDTO {
   id: string;
   created_at: string;
   author_name: string;
-  contact_type: string;
-  contact_value: string;
-  contact_label: string | null;
   neighborhood: string;
   borough: string;
   housing_type: string;
