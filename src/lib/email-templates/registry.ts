@@ -18,7 +18,9 @@ export interface TemplateEntry {
  *   // then add to TEMPLATES: 'welcome': welcomeTemplate
  */
 import { template as inquiryNotification } from './inquiry-notification'
+import { template as listingManagementLink } from './listing-management-link'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'inquiry-notification': inquiryNotification,
+  'listing-management-link': listingManagementLink,
 }

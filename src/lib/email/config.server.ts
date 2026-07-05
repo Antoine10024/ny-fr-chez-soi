@@ -31,6 +31,13 @@ export const INQUIRY_FROM_NAME =
 export const INQUIRY_BCC_ADDRESS =
   process.env.INQUIRY_BCC_ADDRESS ?? "antoine@smoovehomes.com";
 
+/**
+ * Public base URL used to build absolute links in emails (e.g. management
+ * links). Set SITE_URL in production; the server also falls back to the
+ * request Origin header when available.
+ */
+export const SITE_URL = process.env.SITE_URL ?? "";
+
 export function formatFrom(name: string, address: string): string {
   return `${name} <${address}>`;
 }
