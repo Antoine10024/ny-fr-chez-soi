@@ -154,6 +154,7 @@ export const submitListing = createServerFn({ method: "POST" })
         contact_type: data.contact_type,
         contact_value: data.contact_value,
         contact_label: data.contact_label || null,
+        borough: data.borough,
         neighborhood: data.neighborhood,
         housing_type: data.housing_type,
         summary: data.summary,
