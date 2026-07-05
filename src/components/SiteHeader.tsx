@@ -8,7 +8,7 @@ export function SiteHeader() {
           <span className="font-serif text-xl leading-none font-medium text-foreground">
             Logements
           </span>
-          <span className="inline-block h-1.5 w-1.5 -translate-y-px self-center rounded-full bg-primary" aria-hidden />
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" aria-hidden />
           <span className="font-serif text-xl leading-none text-muted-foreground">
             NYC
           </span>
