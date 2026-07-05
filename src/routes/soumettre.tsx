@@ -44,6 +44,9 @@ const availabilitySchema = z
 const schema = z.object({
   author_name: z.string().trim().min(1, "Ton prénom est requis").max(100),
   author_email: z.string().trim().email("Email invalide").max(255),
+  category: z.enum(["sejour_temporaire", "reprise_bail", "colocation"], {
+    message: "Choisis une catégorie",
+  }),
   borough: z.enum(["manhattan", "brooklyn", "queens", "new_jersey", "autre"], {
     message: "Choisis un borough",
   }),
