@@ -3,11 +3,11 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sous-loc NYC — Sous-locations entre Français à New York" },
+      { title: "Logements NYC — Logements entre Français à New York" },
       {
         name: "description",
         content:
-          "Le site communautaire qui centralise les annonces de sous-location temporaire partagées par la communauté française à NYC.",
+          "Le site des Français qui cherchent ou proposent un logement à New York. Pas de commission, juste de la mise en relation, 100% gratuit.",
       },
     ],
   }),
