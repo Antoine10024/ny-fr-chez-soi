@@ -255,6 +255,19 @@ function SubmitPage() {
       </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mt-10 space-y-10">
+        <Section title="Que proposes-tu ?">
+          <FormField label="Catégorie" error={errors.category?.message}>
+            <select className={inputCls} {...register("category")}>
+              <option value="">— Choisir —</option>
+              {LISTING_CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </FormField>
+        </Section>
+
         <Section title="Logement">
           <Grid>
             <FormField label="Borough" error={errors.borough?.message}>
