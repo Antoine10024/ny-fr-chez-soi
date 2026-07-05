@@ -262,11 +262,11 @@ function AnnoncesPage() {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-muted-foreground">
-        {label}
+    <label className="flex h-full flex-col">
+      <span className="mb-1 block min-h-[1.25rem] text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        {label.trim() ? label : "\u00A0"}
       </span>
-      {children}
+      <div className="mt-auto">{children}</div>
     </label>
   );
 }
