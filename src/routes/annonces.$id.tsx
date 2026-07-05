@@ -4,6 +4,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getListing } from "@/lib/listings.functions";
 import { categoryLabel, formatDateRange, formatLocation, housingLabel } from "@/lib/listing-constants";
 import { ContactInquiryDialog } from "@/components/ContactInquiryDialog";
+import { PhotoCarousel } from "@/components/PhotoCarousel";
 import { Button } from "@/components/ui/button";
 
 
@@ -62,29 +63,16 @@ function ListingDetail() {
         ← Toutes les annonces
       </Link>
 
-      <div className="mt-6 grid gap-3 md:grid-cols-2">
+      <div className="mt-6">
         {listing.photos.length > 0 ? (
-          <>
-            <img
-              src={listing.photos[0]}
-              alt={`Photo principale — ${listing.neighborhood}`}
-              className="aspect-[4/3] w-full rounded-2xl border border-border object-cover md:row-span-2 md:aspect-auto md:h-full"
-            />
-            {listing.photos.slice(1, 3).map((p, i) => (
-              <img
-                key={i}
-                src={p}
-                alt={`Photo ${i + 2}`}
-                className="aspect-[4/3] w-full rounded-2xl border border-border object-cover"
-              />
-            ))}
-          </>
+          <PhotoCarousel photos={listing.photos} alt={listing.neighborhood} />
         ) : (
-          <div className="md:col-span-2 grid aspect-[16/7] place-items-center rounded-2xl border border-dashed border-border bg-card text-muted-foreground">
+          <div className="grid aspect-[16/7] place-items-center rounded-2xl border border-dashed border-border bg-card text-muted-foreground">
             <span className="font-serif italic">Pas de photo fournie</span>
           </div>
         )}
       </div>
+
 
       <div className="mt-10 grid gap-12 md:grid-cols-[1.6fr_1fr]">
         <article>
