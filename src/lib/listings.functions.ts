@@ -85,7 +85,10 @@ export const listListings = createServerFn({ method: "GET" }).handler(async () =
     .from("public_listings")
     .select("*")
     .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error("[listings] listListings failed", error);
+    throw new Error("Impossible de charger les annonces pour le moment.");
+  }
   const rows = (data ?? []).map((r) => asListing(r as Record<string, unknown>));
   return await Promise.all(
     rows.map(async (r) => ({
@@ -104,12 +107,16 @@ export const getListing = createServerFn({ method: "GET" })
       .select("*")
       .eq("id", data.id)
       .maybeSingle();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("[listings] getListing failed", { id: data.id, error });
+      throw new Error("Impossible de charger cette annonce.");
+    }
     if (!row) return null;
     const listing = asListing(row as Record<string, unknown>);
     listing.photos = await resolvePhotos(listing.photos);
     return listing;
   });
+
 
 const availabilitySchema = z
   .object({
@@ -159,7 +166,10 @@ export const submitListing = createServerFn({ method: "POST" })
       })
       .select("id, moderation_token, management_token")
       .single();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("[listings] submitListing insert failed", error);
+      throw new Error("Impossible d'enregistrer votre annonce pour le moment. Merci de réessayer.");
+    }
 
     const { error: availErr } = await supabaseAdmin
       .from("listing_availabilities")
@@ -170,7 +180,11 @@ export const submitListing = createServerFn({ method: "POST" })
           end_date: a.end_date,
         })),
       );
-    if (availErr) throw new Error(availErr.message);
+    if (availErr) {
+      console.error("[listings] submitListing availabilities insert failed", { id: row.id, error: availErr });
+      throw new Error("Impossible d'enregistrer les disponibilités. Merci de réessayer.");
+    }
+
 
     console.log(`[listings] new listing submitted: ${row.id}`);
 
@@ -264,7 +278,11 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
       )
       .eq("management_token", data.token)
       .maybeSingle();
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("[listings] getListingByManagementToken failed", error);
+      throw new Error("Impossible de charger cette annonce.");
+    }
+
     if (!row) return null;
     const availabilities: Availability[] = (row.listing_availabilities ?? [])
       .map((a) => ({
@@ -312,7 +330,10 @@ export const updateListingByManagementToken = createServerFn({ method: "POST" })
       .select("id")
       .eq("management_token", data.token)
       .maybeSingle();
-    if (findErr) throw new Error(findErr.message);
+    if (findErr) {
+      console.error("[listings] updateListing lookup failed", findErr);
+      throw new Error("Impossible de mettre à jour l'annonce pour le moment.");
+    }
     if (!existing) throw new Error("Lien de gestion invalide.");
 
     const { error: updErr } = await supabaseAdmin
@@ -324,13 +345,19 @@ export const updateListingByManagementToken = createServerFn({ method: "POST" })
         photos: data.photos,
       })
       .eq("id", existing.id);
-    if (updErr) throw new Error(updErr.message);
+    if (updErr) {
+      console.error("[listings] updateListing update failed", { id: existing.id, error: updErr });
+      throw new Error("Impossible de mettre à jour l'annonce pour le moment.");
+    }
 
     const { error: delErr } = await supabaseAdmin
       .from("listing_availabilities")
       .delete()
       .eq("listing_id", existing.id);
-    if (delErr) throw new Error(delErr.message);
+    if (delErr) {
+      console.error("[listings] updateListing delete availabilities failed", { id: existing.id, error: delErr });
+      throw new Error("Impossible de mettre à jour les disponibilités.");
+    }
 
     const { error: insErr } = await supabaseAdmin
       .from("listing_availabilities")
@@ -341,7 +368,11 @@ export const updateListingByManagementToken = createServerFn({ method: "POST" })
           end_date: a.end_date,
         })),
       );
-    if (insErr) throw new Error(insErr.message);
+    if (insErr) {
+      console.error("[listings] updateListing insert availabilities failed", { id: existing.id, error: insErr });
+      throw new Error("Impossible de mettre à jour les disponibilités.");
+    }
+
 
     return { ok: true as const };
   });
@@ -357,13 +388,20 @@ export const withdrawListingByManagementToken = createServerFn({ method: "POST" 
       .select("id")
       .eq("management_token", data.token)
       .maybeSingle();
-    if (findErr) throw new Error(findErr.message);
+    if (findErr) {
+      console.error("[listings] withdrawListing lookup failed", findErr);
+      throw new Error("Impossible de retirer l'annonce pour le moment.");
+    }
     if (!existing) throw new Error("Lien de gestion invalide.");
     const { error: updErr } = await supabaseAdmin
       .from("listings")
       .update({ status: "withdrawn" })
       .eq("id", existing.id);
-    if (updErr) throw new Error(updErr.message);
+    if (updErr) {
+      console.error("[listings] withdrawListing update failed", { id: existing.id, error: updErr });
+      throw new Error("Impossible de retirer l'annonce pour le moment.");
+    }
+
     return { ok: true as const };
   });
 
@@ -388,7 +426,11 @@ export const createInquiry = createServerFn({ method: "POST" })
       .from("listing_availabilities")
       .select("start_date, end_date, status")
       .eq("listing_id", data.listing_id);
-    if (aErr) throw new Error(aErr.message);
+    if (aErr) {
+      console.error("[listings] createInquiry availabilities lookup failed", { listing_id: data.listing_id, error: aErr });
+      throw new Error("Impossible d'envoyer ton message pour le moment. Merci de réessayer.");
+    }
+
     const fits = (avails ?? []).some(
       (a) =>
         a.status !== "unavailable" &&
@@ -413,7 +455,11 @@ export const createInquiry = createServerFn({ method: "POST" })
       .select("id")
       .single();
 
-    if (error) throw new Error(error.message);
+    if (error) {
+      console.error("[listings] createInquiry insert failed", { listing_id: data.listing_id, error });
+      throw new Error("Impossible d'envoyer ton message pour le moment. Merci de réessayer.");
+    }
+
 
     // Fetch owner email and listing context (server-only — never exposed to the visitor).
     const { data: listing } = await supabaseAdmin
