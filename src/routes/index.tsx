@@ -1,4 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
+import brownstoneImg from "@/assets/brownstone.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -60,16 +61,12 @@ function Home() {
           <div className="relative">
             <div className="absolute -left-6 top-6 hidden h-full w-full rounded-3xl border border-border md:block" />
             <img
-              src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=1400"
-              alt="Skyline de New York"
+              src={brownstoneImg}
+              alt="Brownstone à New York"
+              width={1024}
+              height={1280}
               className="relative aspect-[4/5] w-full rounded-3xl border border-border object-cover shadow-[0_30px_60px_-30px_oklch(0.18_0.015_60/0.4)]"
             />
-            <div className="absolute -bottom-5 -left-5 rounded-2xl border border-border bg-card px-4 py-3 shadow-sm">
-              <p className="font-serif text-sm italic text-foreground">
-                « Trouvé une chambre à Astoria en deux jours. »
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">— Camille, Brooklyn</p>
-            </div>
           </div>
         </div>
       </section>
