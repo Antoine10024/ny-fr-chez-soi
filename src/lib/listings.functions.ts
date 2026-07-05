@@ -249,7 +249,7 @@ export const submitListing = createServerFn({ method: "POST" })
   });
 
 export interface ManagedListingDTO extends ListingDTO {
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "withdrawn";
   author_email: string;
   photo_paths: string[];
 }
@@ -347,6 +347,27 @@ export const updateListingByManagementToken = createServerFn({ method: "POST" })
       );
     if (insErr) throw new Error(insErr.message);
 
+    return { ok: true as const };
+  });
+
+export const withdrawListingByManagementToken = createServerFn({ method: "POST" })
+  .inputValidator((input: { token: string }) =>
+    z.object({ token: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: existing, error: findErr } = await supabaseAdmin
+      .from("listings")
+      .select("id")
+      .eq("management_token", data.token)
+      .maybeSingle();
+    if (findErr) throw new Error(findErr.message);
+    if (!existing) throw new Error("Lien de gestion invalide.");
+    const { error: updErr } = await supabaseAdmin
+      .from("listings")
+      .update({ status: "withdrawn" })
+      .eq("id", existing.id);
+    if (updErr) throw new Error(updErr.message);
     return { ok: true as const };
   });
 

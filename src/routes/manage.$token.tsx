@@ -13,10 +13,22 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   getListingByManagementToken,
   updateListingByManagementToken,
+  withdrawListingByManagementToken,
 } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { DateRangePicker } from "@/components/DateRangePicker";
 import { housingLabel } from "@/lib/listing-constants";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const manageQuery = (token: string) =>
   queryOptions({
@@ -73,6 +85,10 @@ const STATUS_LABEL: Record<string, { label: string; className: string }> = {
     label: "Refusée",
     className: "bg-red-100 text-red-800 border-red-200",
   },
+  withdrawn: {
+    label: "Retirée du site",
+    className: "bg-slate-100 text-slate-700 border-slate-200",
+  },
 };
 
 const availabilitySchema = z
@@ -115,11 +131,15 @@ function ManagePage() {
   const { data: listing } = useSuspenseQuery(manageQuery(token));
   const queryClient = useQueryClient();
   const update = useServerFn(updateListingByManagementToken);
+  const withdraw = useServerFn(withdrawListingByManagementToken);
 
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [uploading, setUploading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [withdrawnAt, setWithdrawnAt] = useState<number | null>(null);
+  const [withdrawError, setWithdrawError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!listing) return;
@@ -270,6 +290,13 @@ function ManagePage() {
           </span>
         </div>
       </div>
+
+      {withdrawnAt || listing.status === "withdrawn" ? (
+        <div className="mt-6 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm text-slate-800">
+          Ton annonce a bien été retirée du site. Elle reste conservée dans notre base
+          de données mais n&apos;apparaît plus publiquement.
+        </div>
+      ) : null}
 
       {savedAt ? (
         <div className="mt-6 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
@@ -439,6 +466,87 @@ function ManagePage() {
           </button>
         </div>
       </form>
+
+      <section className="mt-16 rounded-2xl border border-destructive/30 bg-destructive/5 p-6">
+        <h2 className="font-serif text-xl text-foreground">Retirer mon annonce</h2>
+        <p className="mt-2 text-sm text-foreground/90">
+          Ton annonce ne sera plus visible publiquement, mais elle sera conservée dans
+          notre base de données (photos et disponibilités incluses). Tu pourras nous
+          contacter plus tard pour la remettre en ligne.
+        </p>
+        {withdrawError ? (
+          <p className="mt-3 text-sm text-destructive">{withdrawError}</p>
+        ) : null}
+        <div className="mt-5">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button
+                type="button"
+                disabled={
+                  withdrawing ||
+                  listing.status === "withdrawn" ||
+                  listing.status === "rejected"
+                }
+                className="inline-flex items-center rounded-full border border-destructive bg-background px-5 py-2.5 text-sm font-medium text-destructive transition hover:bg-destructive hover:text-destructive-foreground disabled:opacity-50"
+              >
+                {listing.status === "withdrawn"
+                  ? "Déjà retirée du site"
+                  : "Retirer mon annonce du site"}
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Retirer l&apos;annonce du site public ?</AlertDialogTitle>
+                <AlertDialogDescription asChild>
+                  <div className="space-y-2 text-sm text-muted-foreground">
+                    <p>
+                      Ton annonce ne s&apos;affichera plus sur la liste publique et ne
+                      recevra plus de nouvelles demandes de contact.
+                    </p>
+                    <p>
+                      <strong className="text-foreground">
+                        Elle ne sera pas supprimée définitivement.
+                      </strong>{" "}
+                      Les photos, les disponibilités et le contenu restent conservés dans
+                      notre base de données. Ton lien de gestion reste valable.
+                    </p>
+                  </div>
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    setWithdrawError(null);
+                    setWithdrawing(true);
+                    try {
+                      await withdraw({ data: { token } });
+                      await queryClient.invalidateQueries({
+                        queryKey: ["manage", token],
+                      });
+                      await queryClient.fetchQuery(manageQuery(token));
+                      setWithdrawnAt(Date.now());
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    } catch (err) {
+                      setWithdrawError(
+                        err instanceof Error
+                          ? err.message
+                          : "Une erreur est survenue",
+                      );
+                    } finally {
+                      setWithdrawing(false);
+                    }
+                  }}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Oui, retirer l&apos;annonce
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </section>
     </div>
   );
 }

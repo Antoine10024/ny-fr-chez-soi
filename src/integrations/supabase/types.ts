@@ -370,7 +370,7 @@ export type Database = {
         | "telegram"
         | "autre"
       housing_type: "chambre" | "studio" | "1-bed" | "2-bed" | "autre"
-      listing_status: "pending" | "approved" | "rejected"
+      listing_status: "pending" | "approved" | "rejected" | "withdrawn"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -508,7 +508,7 @@ export const Constants = {
         "autre",
       ],
       housing_type: ["chambre", "studio", "1-bed", "2-bed", "autre"],
-      listing_status: ["pending", "approved", "rejected"],
+      listing_status: ["pending", "approved", "rejected", "withdrawn"],
     },
   },
 } as const
