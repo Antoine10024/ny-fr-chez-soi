@@ -209,6 +209,42 @@ export const submitListing = createServerFn({ method: "POST" })
       console.error("Failed to send listing management email", err);
     }
 
+    // Send admin notification about the new pending listing.
+    try {
+      const { sendTemplatedEmail } = await import("@/lib/email/send.server");
+      const { ADMIN_EMAIL_ADDRESS } = await import("@/lib/email/config.server");
+      const housingLabels: Record<string, string> = {
+        chambre: "Chambre",
+        studio: "Studio",
+        "1-bed": "1 chambre",
+        "2-bed": "2 chambres",
+        autre: "Autre",
+      };
+      const fmt = (iso: string) => {
+        const [y, m, d] = iso.split("-");
+        return `${d}/${m}/${y}`;
+      };
+      const availabilitiesText = data.availabilities
+        .map((a) => `du ${fmt(a.start_date)} au ${fmt(a.end_date)}`)
+        .join("\n");
+      await sendTemplatedEmail({
+        templateName: "listing-submission-admin",
+        to: ADMIN_EMAIL_ADDRESS,
+        idempotencyKey: `listing-admin-${row.id}`,
+        templateData: {
+          authorName: data.author_name,
+          authorEmail: data.author_email,
+          neighborhood: data.neighborhood,
+          housingType: housingLabels[data.housing_type] ?? data.housing_type,
+          summary: data.summary,
+          availabilities: availabilitiesText,
+          listingId: row.id,
+        },
+      });
+    } catch (err) {
+      console.error("Failed to send admin notification email", err);
+    }
+
     return { ok: true as const, management_token: row.management_token as string };
   });
 

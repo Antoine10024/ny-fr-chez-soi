@@ -31,6 +31,9 @@ export const INQUIRY_FROM_NAME =
 export const INQUIRY_BCC_ADDRESS =
   process.env.INQUIRY_BCC_ADDRESS ?? "antoine@smoovehomes.com";
 
+export const ADMIN_EMAIL_ADDRESS =
+  process.env.ADMIN_EMAIL_ADDRESS ?? "antoine@smoovehomes.com";
+
 /**
  * Public base URL used to build absolute links in emails (e.g. management
  * links). Set SITE_URL in production; the server also falls back to the
