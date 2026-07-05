@@ -95,6 +95,11 @@ function ListingDetail() {
             <span className="rounded-full border border-border px-2.5 py-1 text-foreground/70">
               {housingLabel(listing.housing_type)}
             </span>
+            {listing.category ? (
+              <span className="rounded-full border border-border bg-secondary px-2.5 py-1 text-foreground/70">
+                {categoryLabel(listing.category)}
+              </span>
+            ) : null}
           </div>
           <h1 className="mt-4 font-serif text-3xl leading-tight text-foreground md:text-4xl">
             {listing.summary}
