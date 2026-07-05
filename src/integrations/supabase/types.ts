@@ -294,6 +294,7 @@ export type Database = {
           author_name: string | null
           availabilities: Json | null
           borough: Database["public"]["Enums"]["borough"] | null
+          category: Database["public"]["Enums"]["listing_category"] | null
           contact_label: string | null
           contact_type: Database["public"]["Enums"]["contact_type"] | null
           contact_value: string | null
@@ -310,6 +311,7 @@ export type Database = {
           author_name?: string | null
           availabilities?: never
           borough?: Database["public"]["Enums"]["borough"] | null
+          category?: Database["public"]["Enums"]["listing_category"] | null
           contact_label?: string | null
           contact_type?: Database["public"]["Enums"]["contact_type"] | null
           contact_value?: string | null
@@ -326,6 +328,7 @@ export type Database = {
           author_name?: string | null
           availabilities?: never
           borough?: Database["public"]["Enums"]["borough"] | null
+          category?: Database["public"]["Enums"]["listing_category"] | null
           contact_label?: string | null
           contact_type?: Database["public"]["Enums"]["contact_type"] | null
           contact_value?: string | null
