@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   categoryLabel,
@@ -18,8 +19,66 @@ export interface ListingCardData {
   availabilities: Availability[];
 }
 
+function MobilePhotoCarousel({
+  photos,
+  neighborhood,
+}: {
+  photos: string[];
+  neighborhood: string;
+}) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(0);
+
+  const onScroll = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const i = Math.round(el.scrollLeft / el.clientWidth);
+    if (i !== index) setIndex(i);
+  };
+
+  return (
+    <div className="relative">
+      <div
+        ref={scrollerRef}
+        onScroll={onScroll}
+        className="flex aspect-[4/3] w-full snap-x snap-mandatory overflow-x-auto overflow-y-hidden scroll-smooth bg-secondary [scrollbar-width:none] [-webkit-overflow-scrolling:touch] [&::-webkit-scrollbar]:hidden"
+      >
+        {photos.map((src, i) => (
+          <div key={i} className="relative h-full w-full flex-none snap-center snap-always">
+            <img
+              src={src}
+              alt={`Photo ${i + 1} — ${neighborhood}`}
+              className="h-full w-full object-cover"
+              loading="lazy"
+              draggable={false}
+            />
+          </div>
+        ))}
+      </div>
+      {photos.length > 1 ? (
+        <>
+          <div className="pointer-events-none absolute right-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[11px] font-medium text-white">
+            {index + 1}/{photos.length}
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-2 flex justify-center gap-1.5">
+            {photos.map((_, i) => (
+              <span
+                key={i}
+                className={`h-1.5 rounded-full transition-all ${
+                  i === index ? "w-4 bg-white" : "w-1.5 bg-white/60"
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
+}
+
 export function ListingCard({ listing }: { listing: ListingCardData }) {
   const photo = listing.photos[0];
+  const hasPhotos = listing.photos.length > 0;
   const shown = listing.availabilities.slice(0, 3);
   const extra = listing.availabilities.length - shown.length;
   return (
@@ -28,7 +87,25 @@ export function ListingCard({ listing }: { listing: ListingCardData }) {
       params={{ id: listing.id }}
       className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-0.5 hover:shadow-[0_10px_30px_-12px_oklch(0.18_0.015_60/0.18)]"
     >
-      <div className="aspect-[4/3] w-full overflow-hidden bg-secondary">
+      {/* Mobile: swipeable carousel */}
+      {hasPhotos ? (
+        <div
+          className="md:hidden"
+          onClick={(e) => {
+            // Allow horizontal swipe without triggering navigation issues; taps still bubble to Link
+            e.stopPropagation();
+          }}
+        >
+          <MobilePhotoCarousel photos={listing.photos} neighborhood={listing.neighborhood} />
+        </div>
+      ) : (
+        <div className="grid aspect-[4/3] w-full place-items-center bg-secondary text-muted-foreground md:hidden">
+          <span className="font-serif italic">Photo à venir</span>
+        </div>
+      )}
+
+      {/* Desktop: single hero image (unchanged) */}
+      <div className="hidden aspect-[4/3] w-full overflow-hidden bg-secondary md:block">
         {photo ? (
           <img
             src={photo}
