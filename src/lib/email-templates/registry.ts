@@ -19,8 +19,10 @@ export interface TemplateEntry {
  */
 import { template as inquiryNotification } from './inquiry-notification'
 import { template as listingManagementLink } from './listing-management-link'
+import { template as listingSubmissionAdmin } from './listing-submission-admin'
 
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'inquiry-notification': inquiryNotification,
   'listing-management-link': listingManagementLink,
+  'listing-submission-admin': listingSubmissionAdmin,
 }
