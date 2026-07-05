@@ -373,6 +373,11 @@ function SubmitPage() {
           </div>
         ) : null}
 
+        <div className="rounded-lg border border-primary/20 bg-primary/5 p-4 text-sm text-foreground/90">
+          Tu pourras modifier ou retirer ton annonce à tout moment. Un lien
+          privé te sera envoyé par email après la soumission.
+        </div>
+
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-6">
           <p className="text-xs text-muted-foreground">
             En publiant, tu confirmes avoir le droit de sous-louer ce logement.
