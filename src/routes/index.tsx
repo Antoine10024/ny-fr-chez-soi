@@ -40,8 +40,7 @@ function Home() {
               <li>100% gratuit</li>
             </ul>
             <p className="mt-6 max-w-xl text-base text-muted-foreground">
-              Un petit coin d&apos;entraide entre Français à NYC. Tu publies, tu contactes,
-              vous vous arrangez directement — sans intermédiaire.
+              Un espace d&apos;entraide dédié aux Français qui cherchent ou proposent un logement à New York — sans intermédiaire.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
