@@ -150,9 +150,6 @@ function SubmitPage() {
         data: {
           author_name: values.author_name,
           author_email: values.author_email,
-          contact_type: "email",
-          contact_value: values.author_email,
-          contact_label: "",
           borough: values.borough,
           neighborhood,
           housing_type: values.housing_type,
