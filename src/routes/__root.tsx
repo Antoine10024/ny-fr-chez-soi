@@ -95,6 +95,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content: "Le site des Français qui cherchent ou proposent un logement à New York.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://logements.nyc" },
+      { property: "og:site_name", content: "Logements NYC" },
       { property: "og:locale", content: "fr_FR" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:title", content: "Logements NYC — Logements entre Français à New York" },
