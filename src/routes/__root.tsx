@@ -103,8 +103,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Le site des Français qui cherchent ou proposent un logement à New York. Pas de commission, juste de la mise en relation, 100% gratuit." },
       { property: "og:description", content: "Le site des Français qui cherchent ou proposent un logement à New York. Pas de commission, juste de la mise en relation, 100% gratuit." },
       { name: "twitter:description", content: "Le site des Français qui cherchent ou proposent un logement à New York. Pas de commission, juste de la mise en relation, 100% gratuit." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/847a7434-443a-4342-960a-86b8986822e4/id-preview-75472141--eca69aa2-4af5-4aac-b4a8-f86762f143b9.lovable.app-1783272813956.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/847a7434-443a-4342-960a-86b8986822e4/id-preview-75472141--eca69aa2-4af5-4aac-b4a8-f86762f143b9.lovable.app-1783272813956.png" },
+      { property: "og:image", content: "https://logements.nyc/__l5e/assets-v1/df87158d-00d9-4fa0-82b3-97d2f9fa4a0b/og-image.png" },
+      { name: "twitter:image", content: "https://logements.nyc/__l5e/assets-v1/df87158d-00d9-4fa0-82b3-97d2f9fa4a0b/og-image.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
