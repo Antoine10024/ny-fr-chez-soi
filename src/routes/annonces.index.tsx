@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useSearch } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { z } from "zod";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Check, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { listListings } from "@/lib/listings.functions";
