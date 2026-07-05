@@ -73,6 +73,7 @@ function asListing(row: Record<string, unknown>): ListingDTO {
     contact_value: (row.contact_value as string) ?? "",
     contact_label: (row.contact_label as string | null) ?? null,
     neighborhood: (row.neighborhood as string) ?? "",
+    borough: (row.borough as string) ?? "autre",
     housing_type: (row.housing_type as string) ?? "autre",
     summary: (row.summary as string) ?? "",
     description: (row.description as string) ?? "",
