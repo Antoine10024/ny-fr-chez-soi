@@ -10,7 +10,7 @@ export function SiteFooter() {
         </p>
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs">
           <span>© {new Date().getFullYear()} Logements NYC — projet communautaire, sans but commercial.</span>
-          <span className="font-serif italic">Fait pour et par la communauté des Français à New York.</span>
+          <span className="font-serif italic">Créé par et pour la communauté des Français à New York.</span>
         </div>
       </div>
     </footer>
