@@ -4,7 +4,12 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { listListings } from "@/lib/listings.functions";
 import { ListingCard } from "@/components/ListingCard";
 import { DateRangePicker, type DateRangeValue } from "@/components/DateRangePicker";
-import { HOUSING_TYPES, NEIGHBORHOODS } from "@/lib/listing-constants";
+import {
+  BOROUGHS,
+  HOUSING_TYPES,
+  NEIGHBORHOODS_BY_BOROUGH,
+  type BoroughValue,
+} from "@/lib/listing-constants";
 
 const listingsQuery = queryOptions({
   queryKey: ["listings"],
