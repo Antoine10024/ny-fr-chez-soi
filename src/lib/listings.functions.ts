@@ -249,7 +249,7 @@ export const submitListing = createServerFn({ method: "POST" })
   });
 
 export interface ManagedListingDTO extends ListingDTO {
-  status: "pending" | "approved" | "rejected";
+  status: "pending" | "approved" | "rejected" | "withdrawn";
   author_email: string;
   photo_paths: string[];
 }
