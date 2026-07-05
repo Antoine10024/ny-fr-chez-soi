@@ -295,9 +295,6 @@ export type Database = {
           availabilities: Json | null
           borough: Database["public"]["Enums"]["borough"] | null
           category: Database["public"]["Enums"]["listing_category"] | null
-          contact_label: string | null
-          contact_type: Database["public"]["Enums"]["contact_type"] | null
-          contact_value: string | null
           created_at: string | null
           description: string | null
           housing_type: Database["public"]["Enums"]["housing_type"] | null
@@ -312,9 +309,6 @@ export type Database = {
           availabilities?: never
           borough?: Database["public"]["Enums"]["borough"] | null
           category?: Database["public"]["Enums"]["listing_category"] | null
-          contact_label?: string | null
-          contact_type?: Database["public"]["Enums"]["contact_type"] | null
-          contact_value?: string | null
           created_at?: string | null
           description?: string | null
           housing_type?: Database["public"]["Enums"]["housing_type"] | null
@@ -329,9 +323,6 @@ export type Database = {
           availabilities?: never
           borough?: Database["public"]["Enums"]["borough"] | null
           category?: Database["public"]["Enums"]["listing_category"] | null
-          contact_label?: string | null
-          contact_type?: Database["public"]["Enums"]["contact_type"] | null
-          contact_value?: string | null
           created_at?: string | null
           description?: string | null
           housing_type?: Database["public"]["Enums"]["housing_type"] | null
