@@ -127,6 +127,7 @@ const submitSchema = z.object({
   borough: z.enum(["manhattan", "brooklyn", "queens", "new_jersey", "autre"]),
   neighborhood: z.string().trim().min(1).max(80),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
+  category: z.enum(["sejour_temporaire", "reprise_bail", "colocation"]),
   availabilities: z.array(availabilitySchema).min(1, "Ajoutez au moins une période").max(20),
   summary: z.string().trim().min(10).max(240),
   description: z.string().trim().min(20).max(4000),
