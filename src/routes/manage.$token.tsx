@@ -17,7 +17,7 @@ import {
 } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { DateRangePicker } from "@/components/DateRangePicker";
-import { formatLocation, housingLabel } from "@/lib/listing-constants";
+import { categoryLabel, formatLocation, housingLabel } from "@/lib/listing-constants";
 import {
   AlertDialog,
   AlertDialogAction,
