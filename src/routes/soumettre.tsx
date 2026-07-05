@@ -463,10 +463,7 @@ function SubmitPage() {
           privé te sera envoyé par email une fois ton annonce enregistrée.
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-6">
-          <p className="text-xs text-muted-foreground">
-            En publiant, tu confirmes avoir le droit de sous-louer ce logement.
-          </p>
+        <div className="flex flex-wrap items-center justify-end gap-3 border-t border-border pt-6">
           <button
             type="submit"
             disabled={isSubmitting || uploading}
