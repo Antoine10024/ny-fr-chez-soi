@@ -205,6 +205,7 @@ export type Database = {
           author_email: string
           author_name: string
           borough: Database["public"]["Enums"]["borough"]
+          category: Database["public"]["Enums"]["listing_category"]
           contact_label: string | null
           contact_type: Database["public"]["Enums"]["contact_type"]
           contact_value: string
@@ -224,6 +225,7 @@ export type Database = {
           author_email: string
           author_name: string
           borough?: Database["public"]["Enums"]["borough"]
+          category?: Database["public"]["Enums"]["listing_category"]
           contact_label?: string | null
           contact_type: Database["public"]["Enums"]["contact_type"]
           contact_value: string
@@ -243,6 +245,7 @@ export type Database = {
           author_email?: string
           author_name?: string
           borough?: Database["public"]["Enums"]["borough"]
+          category?: Database["public"]["Enums"]["listing_category"]
           contact_label?: string | null
           contact_type?: Database["public"]["Enums"]["contact_type"]
           contact_value?: string
@@ -377,6 +380,7 @@ export type Database = {
         | "telegram"
         | "autre"
       housing_type: "chambre" | "studio" | "1-bed" | "2-bed" | "autre"
+      listing_category: "sejour_temporaire" | "reprise_bail" | "colocation"
       listing_status: "pending" | "approved" | "rejected" | "withdrawn"
     }
     CompositeTypes: {
@@ -516,6 +520,7 @@ export const Constants = {
         "autre",
       ],
       housing_type: ["chambre", "studio", "1-bed", "2-bed", "autre"],
+      listing_category: ["sejour_temporaire", "reprise_bail", "colocation"],
       listing_status: ["pending", "approved", "rejected", "withdrawn"],
     },
   },
