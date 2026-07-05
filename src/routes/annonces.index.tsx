@@ -59,6 +59,7 @@ function AnnoncesPage() {
       if (borough && l.borough !== borough) return false;
       if (neighborhoods.length > 0 && !neighborhoods.includes(l.neighborhood)) return false;
       if (housing && l.housing_type !== housing) return false;
+      if (category && l.category !== category) return false;
       if (range.from && range.to) {
         const ok = l.availabilities.some(
           (a) => a.start_date <= range.from! && a.end_date >= range.to!,
@@ -67,10 +68,10 @@ function AnnoncesPage() {
       }
       return true;
     });
-  }, [listings, borough, neighborhoods, housing, range]);
+  }, [listings, borough, neighborhoods, housing, category, range]);
 
   const hasFilters =
-    borough || neighborhoods.length > 0 || housing || range.from || range.to;
+    borough || neighborhoods.length > 0 || housing || category || range.from || range.to;
 
   const neighborhoodLabel =
     neighborhoods.length === 0
