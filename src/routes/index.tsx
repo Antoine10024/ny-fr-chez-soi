@@ -28,22 +28,21 @@ function Home() {
               Logements <span className="italic text-primary">NYC</span>
             </h1>
             <p className="mt-5 max-w-xl font-serif text-xl italic leading-snug text-foreground/85 md:text-2xl">
-              Le site des Français qui cherchent ou proposent un logement à New York.
+              Un espace d'entraide dédié au Français qui cherchent ou proposent un logement à New York - sans intermédiaire.
             </p>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <div className="flex items-start gap-4 rounded-2xl border border-border bg-card/30 p-5">
-                <Luggage className="mt-1 h-6 w-6 shrink-0 text-primary" />
-                <div>
-                  <h3 className="font-serif text-base font-medium text-primary">Séjour temporaire</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Pour trouver un logement le temps de votre séjour à New York.</p>
-                </div>
+            <p className="mt-8 text-center font-sans text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+              Trouvez le logement qui vous convient
+            </p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div className="flex flex-col rounded-2xl border border-border bg-card/30 p-5">
+                <Luggage className="h-10 w-10 text-primary" />
+                <h3 className="mt-4 font-serif text-base font-medium text-primary">Séjour temporaire</h3>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Pour trouver un logement le temps de votre séjour à New York.</p>
               </div>
-              <div className="flex items-start gap-4 rounded-2xl border border-border bg-card/30 p-5">
-                <Key className="mt-1 h-6 w-6 shrink-0 text-primary" />
-                <div>
-                  <h3 className="font-serif text-base font-medium text-primary">Reprise de bail</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Pour reprendre un bail existant et vous installer durablement à New York.</p>
-                </div>
+              <div className="flex flex-col rounded-2xl border border-border bg-card/30 p-5">
+                <Key className="h-10 w-10 text-primary" />
+                <h3 className="mt-4 font-serif text-base font-medium text-primary">Reprise de bail</h3>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Pour reprendre un bail existant et vous installer durablement à New York.</p>
               </div>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
