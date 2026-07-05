@@ -172,9 +172,7 @@ export const submitListing = createServerFn({ method: "POST" })
       );
     if (availErr) throw new Error(availErr.message);
 
-    console.log(
-      `[moderation] new listing ${row.id} — token: ${row.moderation_token}`,
-    );
+    console.log(`[listings] new listing submitted: ${row.id}`);
 
     // Send the management link email to the owner. Failure must NOT block
     // listing creation — the confirmation screen still shows the token.
