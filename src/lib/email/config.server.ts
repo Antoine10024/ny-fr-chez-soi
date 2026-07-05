@@ -40,7 +40,10 @@ export const ADMIN_EMAIL_ADDRESS =
  * links). Set SITE_URL in production; the server also falls back to the
  * request Origin header when available.
  */
-export const SITE_URL = process.env.SITE_URL ?? "https://www.logements.nyc";
+// Hard-coded to the canonical www host so absolute links in emails
+// (e.g. /manage/{token}) always use the working domain, regardless of any
+// SITE_URL env override.
+export const SITE_URL = "https://www.logements.nyc";
 
 export function formatFrom(name: string, address: string): string {
   return `${name} <${address}>`;
