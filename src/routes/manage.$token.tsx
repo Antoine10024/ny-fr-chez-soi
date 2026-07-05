@@ -13,10 +13,22 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   getListingByManagementToken,
   updateListingByManagementToken,
+  withdrawListingByManagementToken,
 } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { DateRangePicker } from "@/components/DateRangePicker";
 import { housingLabel } from "@/lib/listing-constants";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const manageQuery = (token: string) =>
   queryOptions({
