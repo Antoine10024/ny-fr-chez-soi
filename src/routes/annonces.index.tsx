@@ -13,6 +13,7 @@ import {
 import {
   BOROUGHS,
   HOUSING_TYPES,
+  LISTING_CATEGORIES,
   NEIGHBORHOODS_BY_BOROUGH,
   type BoroughValue,
 } from "@/lib/listing-constants";
