@@ -251,6 +251,7 @@ export const submitListing = createServerFn({ method: "POST" })
 export interface ManagedListingDTO extends ListingDTO {
   status: "pending" | "approved" | "rejected";
   author_email: string;
+  photo_paths: string[];
 }
 
 export const getListingByManagementToken = createServerFn({ method: "GET" })
@@ -276,6 +277,7 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
         status: a.status,
       }))
       .sort((a, b) => a.start_date.localeCompare(b.start_date));
+    const photoPaths = (row.photos as string[] | null) ?? [];
     return {
       id: row.id,
       created_at: row.created_at,
@@ -290,9 +292,62 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
       summary: row.summary,
       description: row.description,
       practical_info: row.practical_info,
-      photos: await resolvePhotos(row.photos ?? []),
+      photos: await resolvePhotos(photoPaths),
+      photo_paths: photoPaths,
       availabilities,
     };
+  });
+
+const updateSchema = z.object({
+  token: z.string().uuid(),
+  summary: z.string().trim().min(10, "Le titre doit faire au moins 10 caractères").max(240),
+  description: z.string().trim().min(20, "La description doit faire au moins 20 caractères").max(4000),
+  practical_info: z.string().trim().max(2000).optional().or(z.literal("")),
+  photos: z.array(z.string().max(500)).max(10).default([]),
+  availabilities: z.array(availabilitySchema).min(1, "Ajoutez au moins une période").max(20),
+});
+
+export const updateListingByManagementToken = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => updateSchema.parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: existing, error: findErr } = await supabaseAdmin
+      .from("listings")
+      .select("id")
+      .eq("management_token", data.token)
+      .maybeSingle();
+    if (findErr) throw new Error(findErr.message);
+    if (!existing) throw new Error("Lien de gestion invalide.");
+
+    const { error: updErr } = await supabaseAdmin
+      .from("listings")
+      .update({
+        summary: data.summary,
+        description: data.description,
+        practical_info: data.practical_info || null,
+        photos: data.photos,
+      })
+      .eq("id", existing.id);
+    if (updErr) throw new Error(updErr.message);
+
+    const { error: delErr } = await supabaseAdmin
+      .from("listing_availabilities")
+      .delete()
+      .eq("listing_id", existing.id);
+    if (delErr) throw new Error(delErr.message);
+
+    const { error: insErr } = await supabaseAdmin
+      .from("listing_availabilities")
+      .insert(
+        data.availabilities.map((a) => ({
+          listing_id: existing.id,
+          start_date: a.start_date,
+          end_date: a.end_date,
+        })),
+      );
+    if (insErr) throw new Error(insErr.message);
+
+    return { ok: true as const };
   });
 
 const inquirySchema = z.object({
