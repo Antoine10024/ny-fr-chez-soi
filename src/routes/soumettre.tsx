@@ -101,6 +101,7 @@ function SubmitPage() {
     resolver: zodResolver(schema),
     defaultValues: {
       housing_type: "studio",
+      category: undefined as unknown as FormValues["category"],
       borough: undefined as unknown as BoroughValue,
       neighborhood_choice: "",
       neighborhood_custom: "",
