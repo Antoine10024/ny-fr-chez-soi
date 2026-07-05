@@ -204,6 +204,7 @@ export type Database = {
         Row: {
           author_email: string
           author_name: string
+          borough: Database["public"]["Enums"]["borough"]
           contact_label: string | null
           contact_type: Database["public"]["Enums"]["contact_type"]
           contact_value: string
@@ -222,6 +223,7 @@ export type Database = {
         Insert: {
           author_email: string
           author_name: string
+          borough?: Database["public"]["Enums"]["borough"]
           contact_label?: string | null
           contact_type: Database["public"]["Enums"]["contact_type"]
           contact_value: string
@@ -240,6 +242,7 @@ export type Database = {
         Update: {
           author_email?: string
           author_name?: string
+          borough?: Database["public"]["Enums"]["borough"]
           contact_label?: string | null
           contact_type?: Database["public"]["Enums"]["contact_type"]
           contact_value?: string
@@ -287,6 +290,7 @@ export type Database = {
         Row: {
           author_name: string | null
           availabilities: Json | null
+          borough: Database["public"]["Enums"]["borough"] | null
           contact_label: string | null
           contact_type: Database["public"]["Enums"]["contact_type"] | null
           contact_value: string | null
@@ -302,6 +306,7 @@ export type Database = {
         Insert: {
           author_name?: string | null
           availabilities?: never
+          borough?: Database["public"]["Enums"]["borough"] | null
           contact_label?: string | null
           contact_type?: Database["public"]["Enums"]["contact_type"] | null
           contact_value?: string | null
@@ -317,6 +322,7 @@ export type Database = {
         Update: {
           author_name?: string | null
           availabilities?: never
+          borough?: Database["public"]["Enums"]["borough"] | null
           contact_label?: string | null
           contact_type?: Database["public"]["Enums"]["contact_type"] | null
           contact_value?: string | null
@@ -362,6 +368,7 @@ export type Database = {
     }
     Enums: {
       availability_status: "available" | "booked" | "unavailable"
+      borough: "manhattan" | "brooklyn" | "queens" | "new_jersey" | "autre"
       contact_type:
         | "email"
         | "whatsapp"
@@ -499,6 +506,7 @@ export const Constants = {
   public: {
     Enums: {
       availability_status: ["available", "booked", "unavailable"],
+      borough: ["manhattan", "brooklyn", "queens", "new_jersey", "autre"],
       contact_type: [
         "email",
         "whatsapp",

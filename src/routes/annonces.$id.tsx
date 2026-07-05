@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getListing } from "@/lib/listings.functions";
-import { formatDateRange, housingLabel } from "@/lib/listing-constants";
+import { formatDateRange, formatLocation, housingLabel } from "@/lib/listing-constants";
 import { ContactInquiryDialog } from "@/components/ContactInquiryDialog";
 import { Button } from "@/components/ui/button";
 
@@ -90,7 +90,7 @@ function ListingDetail() {
         <article>
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <span className="rounded-full bg-primary/10 px-2.5 py-1 font-medium text-primary">
-              {listing.neighborhood}
+              {formatLocation(listing.neighborhood, listing.borough)}
             </span>
             <span className="rounded-full border border-border px-2.5 py-1 text-foreground/70">
               {housingLabel(listing.housing_type)}

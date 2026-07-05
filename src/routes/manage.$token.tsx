@@ -17,7 +17,7 @@ import {
 } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { DateRangePicker } from "@/components/DateRangePicker";
-import { housingLabel } from "@/lib/listing-constants";
+import { formatLocation, housingLabel } from "@/lib/listing-constants";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -283,7 +283,7 @@ function ManagePage() {
             {status.label}
           </span>
           <span className="ml-2 rounded-full bg-primary/10 px-2.5 py-1 font-medium text-primary">
-            {listing.neighborhood}
+            {formatLocation(listing.neighborhood, listing.borough)}
           </span>
           <span className="rounded-full border border-border px-2.5 py-1 text-foreground/70">
             {housingLabel(listing.housing_type)}

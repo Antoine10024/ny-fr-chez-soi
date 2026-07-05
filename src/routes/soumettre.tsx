@@ -9,8 +9,11 @@ import { submitListing } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { DateRangePicker } from "@/components/DateRangePicker";
 import {
+  BOROUGHS,
   HOUSING_TYPES,
-  NEIGHBORHOODS,
+  NEIGHBORHOODS_BY_BOROUGH,
+  OTHER_NEIGHBORHOOD,
+  type BoroughValue,
 } from "@/lib/listing-constants";
 
 export const Route = createFileRoute("/soumettre")({
@@ -43,7 +46,11 @@ const schema = z.object({
   contact_type: z.enum(["email", "whatsapp", "facebook", "instagram", "telegram", "autre"]),
   contact_value: z.string().trim().max(300),
   contact_label: z.string().trim().max(60).optional(),
-  neighborhood: z.string().trim().min(1, "Choisis un quartier").max(80),
+  borough: z.enum(["manhattan", "brooklyn", "queens", "new_jersey", "autre"], {
+    message: "Choisis un borough",
+  }),
+  neighborhood_choice: z.string().trim().min(1, "Choisis un quartier").max(80),
+  neighborhood_custom: z.string().trim().max(80).optional(),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
   availabilities: z
     .array(availabilitySchema)
@@ -60,6 +67,17 @@ const schema = z.object({
     .min(20, "La description doit faire au moins 20 caractères")
     .max(4000),
   practical_info: z.string().trim().max(2000).optional(),
+}).superRefine((v, ctx) => {
+  if (v.neighborhood_choice === OTHER_NEIGHBORHOOD) {
+    const custom = (v.neighborhood_custom ?? "").trim();
+    if (custom.length < 2) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["neighborhood_custom"],
+        message: "Précise ton quartier",
+      });
+    }
+  }
 });
 type FormValues = z.infer<typeof schema>;
 
@@ -85,10 +103,17 @@ function SubmitPage() {
       contact_value: "",
       contact_label: "",
       housing_type: "studio",
-      neighborhood: "",
+      borough: undefined as unknown as BoroughValue,
+      neighborhood_choice: "",
+      neighborhood_custom: "",
       availabilities: [{ start_date: "", end_date: "" }],
     },
   });
+
+  const borough = watch("borough");
+  const neighborhoodChoice = watch("neighborhood_choice");
+  const neighborhoods = borough ? NEIGHBORHOODS_BY_BOROUGH[borough] : [];
+  const showCustomNeighborhood = neighborhoodChoice === OTHER_NEIGHBORHOOD;
 
   const { fields, append, remove } = useFieldArray({ control, name: "availabilities" });
   const availabilitiesValue = watch("availabilities");
@@ -123,12 +148,23 @@ function SubmitPage() {
   async function onSubmit(values: FormValues) {
     setServerError(null);
     try {
+      const neighborhood =
+        values.neighborhood_choice === OTHER_NEIGHBORHOOD
+          ? (values.neighborhood_custom ?? "").trim()
+          : values.neighborhood_choice;
       const res = await submit({
         data: {
-          ...values,
+          author_name: values.author_name,
+          author_email: values.author_email,
           contact_type: "email",
           contact_value: values.author_email,
           contact_label: "",
+          borough: values.borough,
+          neighborhood,
+          housing_type: values.housing_type,
+          availabilities: values.availabilities,
+          summary: values.summary,
+          description: values.description,
           practical_info: values.practical_info || "",
           photos,
         },
@@ -224,12 +260,20 @@ function SubmitPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="mt-10 space-y-10">
         <Section title="Logement">
           <Grid>
-            <FormField label="Quartier" error={errors.neighborhood?.message}>
-              <select className={inputCls} {...register("neighborhood")}>
+            <FormField label="Borough" error={errors.borough?.message}>
+              <select
+                className={inputCls}
+                {...register("borough", {
+                  onChange: () => {
+                    setValue("neighborhood_choice", "", { shouldValidate: false });
+                    setValue("neighborhood_custom", "", { shouldValidate: false });
+                  },
+                })}
+              >
                 <option value="">— Choisir —</option>
-                {NEIGHBORHOODS.map((n) => (
-                  <option key={n} value={n}>
-                    {n}
+                {BOROUGHS.map((b) => (
+                  <option key={b.value} value={b.value}>
+                    {b.label}
                   </option>
                 ))}
               </select>
@@ -243,6 +287,36 @@ function SubmitPage() {
                 ))}
               </select>
             </FormField>
+          </Grid>
+          <Grid>
+            <FormField label="Quartier" error={errors.neighborhood_choice?.message}>
+              <select
+                className={inputCls}
+                disabled={!borough}
+                {...register("neighborhood_choice")}
+              >
+                <option value="">
+                  {borough ? "— Choisir —" : "Sélectionne d'abord un borough"}
+                </option>
+                {neighborhoods.map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </FormField>
+            {showCustomNeighborhood ? (
+              <FormField
+                label="Précise ton quartier"
+                error={errors.neighborhood_custom?.message}
+              >
+                <input
+                  className={inputCls}
+                  placeholder="Ex. Long Island City nord"
+                  {...register("neighborhood_custom")}
+                />
+              </FormField>
+            ) : null}
           </Grid>
         </Section>
 

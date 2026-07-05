@@ -18,6 +18,7 @@ export interface ListingDTO {
   contact_value: string;
   contact_label: string | null;
   neighborhood: string;
+  borough: string;
   housing_type: string;
   summary: string;
   description: string;
@@ -72,6 +73,7 @@ function asListing(row: Record<string, unknown>): ListingDTO {
     contact_value: (row.contact_value as string) ?? "",
     contact_label: (row.contact_label as string | null) ?? null,
     neighborhood: (row.neighborhood as string) ?? "",
+    borough: (row.borough as string) ?? "autre",
     housing_type: (row.housing_type as string) ?? "autre",
     summary: (row.summary as string) ?? "",
     description: (row.description as string) ?? "",
@@ -129,6 +131,7 @@ const submitSchema = z.object({
   contact_type: z.enum(["email", "whatsapp", "facebook", "instagram", "telegram", "autre"]),
   contact_value: z.string().trim().min(1).max(300),
   contact_label: z.string().trim().max(60).optional().or(z.literal("")),
+  borough: z.enum(["manhattan", "brooklyn", "queens", "new_jersey", "autre"]),
   neighborhood: z.string().trim().min(1).max(80),
   housing_type: z.enum(["chambre", "studio", "1-bed", "2-bed", "autre"]),
   availabilities: z.array(availabilitySchema).min(1, "Ajoutez au moins une période").max(20),
@@ -151,6 +154,7 @@ export const submitListing = createServerFn({ method: "POST" })
         contact_type: data.contact_type,
         contact_value: data.contact_value,
         contact_label: data.contact_label || null,
+        borough: data.borough,
         neighborhood: data.neighborhood,
         housing_type: data.housing_type,
         summary: data.summary,
@@ -263,7 +267,7 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
     const { data: row, error } = await supabaseAdmin
       .from("listings")
       .select(
-        "id, created_at, status, author_name, author_email, contact_type, contact_value, contact_label, neighborhood, housing_type, summary, description, practical_info, photos, listing_availabilities(id, start_date, end_date, status)",
+        "id, created_at, status, author_name, author_email, contact_type, contact_value, contact_label, neighborhood, borough, housing_type, summary, description, practical_info, photos, listing_availabilities(id, start_date, end_date, status)",
       )
       .eq("management_token", data.token)
       .maybeSingle();
@@ -288,6 +292,7 @@ export const getListingByManagementToken = createServerFn({ method: "GET" })
       contact_value: row.contact_value,
       contact_label: row.contact_label,
       neighborhood: row.neighborhood,
+      borough: row.borough,
       housing_type: row.housing_type,
       summary: row.summary,
       description: row.description,

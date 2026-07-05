@@ -4,7 +4,12 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { listListings } from "@/lib/listings.functions";
 import { ListingCard } from "@/components/ListingCard";
 import { DateRangePicker, type DateRangeValue } from "@/components/DateRangePicker";
-import { HOUSING_TYPES, NEIGHBORHOODS } from "@/lib/listing-constants";
+import {
+  BOROUGHS,
+  HOUSING_TYPES,
+  NEIGHBORHOODS_BY_BOROUGH,
+  type BoroughValue,
+} from "@/lib/listing-constants";
 
 const listingsQuery = queryOptions({
   queryKey: ["listings"],
@@ -28,16 +33,18 @@ export const Route = createFileRoute("/annonces/")({
 
 function AnnoncesPage() {
   const { data: listings } = useSuspenseQuery(listingsQuery);
+  const [borough, setBorough] = useState<BoroughValue | "">("");
   const [neighborhood, setNeighborhood] = useState<string>("");
   const [housing, setHousing] = useState<string>("");
   const [range, setRange] = useState<DateRangeValue>({});
 
+  const neighborhoodOptions = borough ? NEIGHBORHOODS_BY_BOROUGH[borough] : [];
+
   const filtered = useMemo(() => {
     return listings.filter((l) => {
+      if (borough && l.borough !== borough) return false;
       if (neighborhood && l.neighborhood !== neighborhood) return false;
       if (housing && l.housing_type !== housing) return false;
-      // Range filter: only apply when BOTH dates are set; keep listings with
-      // at least one availability that fully covers the requested range.
       if (range.from && range.to) {
         const ok = l.availabilities.some(
           (a) => a.start_date <= range.from! && a.end_date >= range.to!,
@@ -46,9 +53,9 @@ function AnnoncesPage() {
       }
       return true;
     });
-  }, [listings, neighborhood, housing, range]);
+  }, [listings, borough, neighborhood, housing, range]);
 
-  const hasFilters = neighborhood || housing || range.from || range.to;
+  const hasFilters = borough || neighborhood || housing || range.from || range.to;
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
@@ -69,15 +76,33 @@ function AnnoncesPage() {
       </div>
 
       <div className="sticky top-[72px] z-20 mt-8 rounded-2xl border border-border bg-background/90 p-4 backdrop-blur">
-        <div className="grid gap-3 md:grid-cols-4">
+        <div className="grid gap-3 md:grid-cols-5">
+          <Field label="Borough">
+            <select
+              value={borough}
+              onChange={(e) => {
+                setBorough(e.target.value as BoroughValue | "");
+                setNeighborhood("");
+              }}
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+            >
+              <option value="">Tous</option>
+              {BOROUGHS.map((b) => (
+                <option key={b.value} value={b.value}>
+                  {b.label}
+                </option>
+              ))}
+            </select>
+          </Field>
           <Field label="Quartier">
             <select
               value={neighborhood}
               onChange={(e) => setNeighborhood(e.target.value)}
-              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
+              disabled={!borough}
+              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm disabled:opacity-60"
             >
-              <option value="">Tous</option>
-              {NEIGHBORHOODS.map((n) => (
+              <option value="">{borough ? "Tous" : "Choisir un borough"}</option>
+              {neighborhoodOptions.map((n) => (
                 <option key={n} value={n}>
                   {n}
                 </option>
@@ -110,6 +135,7 @@ function AnnoncesPage() {
             <button
               type="button"
               onClick={() => {
+                setBorough("");
                 setNeighborhood("");
                 setHousing("");
                 setRange({});
@@ -127,6 +153,7 @@ function AnnoncesPage() {
           </p>
         ) : null}
       </div>
+
 
       {filtered.length === 0 ? (
         <div className="mt-12 rounded-2xl border border-dashed border-border bg-card p-12 text-center">
