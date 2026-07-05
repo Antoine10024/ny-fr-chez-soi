@@ -84,19 +84,11 @@ function AnnoncesPage() {
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-serif text-4xl text-foreground md:text-5xl">Annonces</h1>
-          <p className="mt-2 text-muted-foreground">
-            Parcourez les logements proposés par la communauté française à New York, pour un séjour temporaire ou une reprise de bail.
-          </p>
-        </div>
-        <Link
-          to="/soumettre"
-          className="inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-        >
-          Publier une annonce
-        </Link>
+      <div>
+        <h1 className="font-serif text-4xl text-foreground md:text-5xl">Annonces</h1>
+        <p className="mt-2 text-muted-foreground">
+          Parcourez les logements proposés par la communauté française à New York, pour un séjour temporaire ou une reprise de bail.
+        </p>
       </div>
 
       <div className="sticky top-[72px] z-20 mt-8 rounded-2xl border border-border bg-background/90 p-4 backdrop-blur">
