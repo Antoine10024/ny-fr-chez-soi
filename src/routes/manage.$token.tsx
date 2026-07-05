@@ -470,9 +470,7 @@ function ManagePage() {
       <section className="mt-16 rounded-2xl border border-destructive/30 bg-destructive/5 p-6">
         <h2 className="font-serif text-xl text-foreground">Retirer mon annonce</h2>
         <p className="mt-2 text-sm text-foreground/90">
-          Ton annonce ne sera plus visible publiquement, mais elle sera conservée dans
-          notre base de données (photos et disponibilités incluses). Tu pourras nous
-          contacter plus tard pour la remettre en ligne.
+          Ton annonce ne sera plus visible sur le site.
         </p>
         {withdrawError ? (
           <p className="mt-3 text-sm text-destructive">{withdrawError}</p>
