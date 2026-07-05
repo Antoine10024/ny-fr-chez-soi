@@ -80,13 +80,13 @@ function UnsubscribePage() {
       )}
       {state.kind === "already" && (
         <p className="mt-4 text-sm text-muted-foreground">
-          Cette adresse est déjà désinscrite. Tu ne recevras plus d&apos;emails de NY Fr Chez Soi.
+          Cette adresse est déjà désinscrite. Tu ne recevras plus d&apos;emails de Logements NYC.
         </p>
       )}
       {state.kind === "confirm" && (
         <>
           <p className="mt-4 text-sm text-muted-foreground">
-            Confirme la désinscription pour ne plus recevoir d&apos;emails de NY Fr Chez Soi à cette adresse.
+            Confirme la désinscription pour ne plus recevoir d&apos;emails de Logements NYC à cette adresse.
           </p>
           <button
             onClick={confirm}
@@ -101,7 +101,7 @@ function UnsubscribePage() {
       )}
       {state.kind === "done" && (
         <p className="mt-4 text-sm text-muted-foreground">
-          Désinscription confirmée. Tu ne recevras plus d&apos;emails de NY Fr Chez Soi à cette adresse.
+          Désinscription confirmée. Tu ne recevras plus d&apos;emails de Logements NYC à cette adresse.
         </p>
       )}
       {state.kind === "error" && (
