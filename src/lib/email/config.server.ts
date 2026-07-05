@@ -23,7 +23,7 @@
 export const EMAIL_SENDER_DOMAIN = "notify.logements.nyc";
 
 export const INQUIRY_FROM_ADDRESS =
-  process.env.INQUIRY_FROM_ADDRESS ?? "bonjour@logements.nyc";
+  process.env.INQUIRY_FROM_ADDRESS ?? "bonjour@notify.logements.nyc";
 
 export const INQUIRY_FROM_NAME =
   process.env.INQUIRY_FROM_NAME ?? "Logements NYC";
