@@ -24,26 +24,28 @@ function Home() {
         <div className="paper-grain absolute inset-0 opacity-60" aria-hidden />
         <div className="relative mx-auto grid max-w-6xl gap-12 px-5 py-20 md:grid-cols-[1.05fr_0.95fr] md:py-28">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-3 py-1 text-xs uppercase tracking-wide text-muted-foreground">
-              <span className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-              Par et pour les Français à New York
-            </span>
             <h1 className="mt-5 font-serif text-5xl leading-[1.05] text-foreground md:text-6xl">
               Logements <span className="italic text-primary">NYC</span>
             </h1>
             <p className="mt-5 max-w-xl font-serif text-xl italic leading-snug text-foreground/85 md:text-2xl">
-              Le site des Français qui cherchent ou proposent un logement à New York.
+              Que vous veniez à New York pour quelque temps ou pour vous y installer, trouvez un logement proposé par la communauté française.
             </p>
-            <ul className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
-              <li>Pas de commission</li>
-              <li aria-hidden className="text-primary">·</li>
-              <li>Juste de la mise en relation</li>
-              <li aria-hidden className="text-primary">·</li>
-              <li>100% gratuit</li>
-            </ul>
-            <p className="mt-6 max-w-xl text-base text-muted-foreground">
-              Un espace d&apos;entraide dédié aux Français qui cherchent ou proposent un logement à New York — sans intermédiaire.
-            </p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <div className="flex items-start gap-3 rounded-2xl border border-border bg-card/30 p-4">
+                <Luggage className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                <div>
+                  <h3 className="font-serif text-base font-medium text-foreground">Séjour temporaire</h3>
+                  <p className="mt-0.5 text-sm text-muted-foreground">Un appartement pour quelques semaines ou mois entre deux logements.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 rounded-2xl border border-border bg-card/30 p-4">
+                <Key className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+                <div>
+                  <h3 className="font-serif text-base font-medium text-foreground">Reprise de bail</h3>
+                  <p className="mt-0.5 text-sm text-muted-foreground">Reprenez un bail existant et évitez les frais d'agence.</p>
+                </div>
+              </div>
+            </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/annonces"
