@@ -104,7 +104,7 @@ function AnnoncesPage() {
               value={borough}
               onChange={(e) => {
                 setBorough(e.target.value as BoroughValue | "");
-                setNeighborhood("");
+                setNeighborhoods([]);
               }}
               className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm"
             >
@@ -117,19 +117,61 @@ function AnnoncesPage() {
             </select>
           </Field>
           <Field label="Quartier">
-            <select
-              value={neighborhood}
-              onChange={(e) => setNeighborhood(e.target.value)}
-              disabled={!borough}
-              className="w-full rounded-lg border border-input bg-background px-3 py-2 text-sm disabled:opacity-60"
-            >
-              <option value="">{borough ? "Tous" : "Choisir un borough"}</option>
-              {neighborhoodOptions.map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  type="button"
+                  disabled={!borough}
+                  className="flex w-full items-center justify-between gap-2 rounded-lg border border-input bg-background px-3 py-2 text-left text-sm disabled:opacity-60"
+                >
+                  <span className={neighborhoods.length === 0 ? "text-muted-foreground" : "text-foreground"}>
+                    {neighborhoodLabel}
+                  </span>
+                  <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="max-h-72 w-64 overflow-y-auto p-1">
+                {neighborhoodOptions.length === 0 ? (
+                  <p className="p-3 text-sm text-muted-foreground">
+                    Sélectionne d&apos;abord un borough.
+                  </p>
+                ) : (
+                  <>
+                    {neighborhoods.length > 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => setNeighborhoods([])}
+                        className="mb-1 w-full rounded-md px-3 py-1.5 text-left text-xs text-muted-foreground hover:bg-secondary"
+                      >
+                        Tout désélectionner
+                      </button>
+                    ) : null}
+                    {neighborhoodOptions.map((n) => {
+                      const checked = neighborhoods.includes(n);
+                      return (
+                        <button
+                          key={n}
+                          type="button"
+                          onClick={() => toggleNeighborhood(n)}
+                          className="flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-left text-sm text-foreground hover:bg-secondary"
+                        >
+                          <span
+                            className={`grid h-4 w-4 shrink-0 place-items-center rounded border ${
+                              checked
+                                ? "border-primary bg-primary text-primary-foreground"
+                                : "border-input bg-background"
+                            }`}
+                          >
+                            {checked ? <Check className="h-3 w-3" /> : null}
+                          </span>
+                          <span>{n}</span>
+                        </button>
+                      );
+                    })}
+                  </>
+                )}
+              </PopoverContent>
+            </Popover>
           </Field>
           <Field label="Type">
             <select
@@ -158,7 +200,7 @@ function AnnoncesPage() {
               type="button"
               onClick={() => {
                 setBorough("");
-                setNeighborhood("");
+                setNeighborhoods([]);
                 setHousing("");
                 setRange({});
               }}
@@ -168,6 +210,7 @@ function AnnoncesPage() {
               Réinitialiser
             </button>
           </div>
+
         </div>
         {range.from && !range.to ? (
           <p className="mt-2 text-xs text-muted-foreground">
