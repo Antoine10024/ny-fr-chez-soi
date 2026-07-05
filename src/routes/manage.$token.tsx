@@ -131,11 +131,15 @@ function ManagePage() {
   const { data: listing } = useSuspenseQuery(manageQuery(token));
   const queryClient = useQueryClient();
   const update = useServerFn(updateListingByManagementToken);
+  const withdraw = useServerFn(withdrawListingByManagementToken);
 
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
   const [uploading, setUploading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<number | null>(null);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [withdrawnAt, setWithdrawnAt] = useState<number | null>(null);
+  const [withdrawError, setWithdrawError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!listing) return;
