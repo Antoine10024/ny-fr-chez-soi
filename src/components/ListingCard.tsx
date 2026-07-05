@@ -1,5 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { formatLocation, formatShortDateRange, housingLabel } from "@/lib/listing-constants";
+import {
+  categoryLabel,
+  formatLocation,
+  formatShortDateRange,
+  housingLabel,
+} from "@/lib/listing-constants";
 import type { Availability } from "@/lib/listings.functions";
 
 export interface ListingCardData {
@@ -7,6 +12,7 @@ export interface ListingCardData {
   neighborhood: string;
   borough: string;
   housing_type: string;
+  category: string;
   summary: string;
   photos: string[];
   availabilities: Availability[];
