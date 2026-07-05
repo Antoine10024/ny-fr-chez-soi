@@ -132,26 +132,17 @@ function AnnoncesPage() {
             <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" />
           </MobilePill>
 
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className={pillClasses(!!range.from)}
-              >
-                <span className="truncate">{dateLabelActive}</span>
-                <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="start" className="w-auto p-0">
-              <DateRangePicker
-                value={range}
-                onChange={setRange}
-                placeholder="Sélectionner"
-                minDate={new Date()}
-                numberOfMonths={1}
-              />
-            </PopoverContent>
-          </Popover>
+          <div className="shrink-0">
+            <DateRangePicker
+              value={range}
+              onChange={setRange}
+              placeholder="Dates"
+              minDate={new Date()}
+              numberOfMonths={1}
+              className={pillClasses(!!range.from) + " !w-auto !justify-start !pl-3"}
+            />
+          </div>
+
 
           <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
             <SheetTrigger asChild>
