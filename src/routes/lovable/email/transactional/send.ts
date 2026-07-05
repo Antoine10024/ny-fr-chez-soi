@@ -11,7 +11,7 @@ const SITE_NAME = "Logements NYC"
 const SENDER_DOMAIN = "notify.logements.nyc"
 // FROM_DOMAIN is the domain shown in the From: header (e.g., "example.com").
 // Can be the root domain when display_from_root is enabled — this is cosmetic only.
-const FROM_DOMAIN = "logements.nyc"
+const FROM_DOMAIN = "notify.logements.nyc"
 
 function redactEmail(email: string | null | undefined): string {
   if (!email) return '***'
