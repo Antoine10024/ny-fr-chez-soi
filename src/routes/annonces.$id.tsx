@@ -28,7 +28,7 @@ export const Route = createFileRoute("/annonces/$id")({
         { title },
         {
           name: "description",
-          content: loaderData?.summary ?? "Annonce de sous-location à New York.",
+          content: loaderData?.summary ?? "Annonce de logement à New York.",
         },
       ],
     };

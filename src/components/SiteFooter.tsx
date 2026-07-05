@@ -4,7 +4,7 @@ export function SiteFooter() {
       <div className="mx-auto max-w-6xl px-5 py-10 text-sm text-muted-foreground">
         <p className="max-w-3xl leading-relaxed">
           Ce site est un outil communautaire de mise en relation. Chaque personne
-          est responsable de vérifier les conditions de sous-location, son bail,
+          est responsable de vérifier les conditions prévues par son bail,
           les règles de son immeuble et les modalités de contact avec
           l&apos;annonceur.
         </p>
