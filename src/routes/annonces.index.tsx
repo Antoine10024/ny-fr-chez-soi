@@ -190,7 +190,7 @@ function AnnoncesPage() {
               </PopoverContent>
             </Popover>
           </Field>
-          <Field label="Type">
+          <Field label="Taille">
             <select
               value={housing}
               onChange={(e) => setHousing(e.target.value)}
@@ -204,7 +204,7 @@ function AnnoncesPage() {
               ))}
             </select>
           </Field>
-          <Field label="Arrivée → Départ">
+          <Field label="Dates">
             <DateRangePicker
               value={range}
               onChange={setRange}
@@ -212,7 +212,7 @@ function AnnoncesPage() {
               minDate={new Date()}
             />
           </Field>
-          <div className="flex items-end">
+          <Field label=" ">
             <button
               type="button"
               onClick={() => {
@@ -227,7 +227,7 @@ function AnnoncesPage() {
             >
               Réinitialiser
             </button>
-          </div>
+          </Field>
 
         </div>
         {range.from && !range.to ? (
