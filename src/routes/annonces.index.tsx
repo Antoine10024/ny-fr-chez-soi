@@ -40,16 +40,22 @@ export const Route = createFileRoute("/annonces/")({
 function AnnoncesPage() {
   const { data: listings } = useSuspenseQuery(listingsQuery);
   const [borough, setBorough] = useState<BoroughValue | "">("");
-  const [neighborhood, setNeighborhood] = useState<string>("");
+  const [neighborhoods, setNeighborhoods] = useState<string[]>([]);
   const [housing, setHousing] = useState<string>("");
   const [range, setRange] = useState<DateRangeValue>({});
 
   const neighborhoodOptions = borough ? NEIGHBORHOODS_BY_BOROUGH[borough] : [];
 
+  function toggleNeighborhood(value: string) {
+    setNeighborhoods((prev) =>
+      prev.includes(value) ? prev.filter((n) => n !== value) : [...prev, value],
+    );
+  }
+
   const filtered = useMemo(() => {
     return listings.filter((l) => {
       if (borough && l.borough !== borough) return false;
-      if (neighborhood && l.neighborhood !== neighborhood) return false;
+      if (neighborhoods.length > 0 && !neighborhoods.includes(l.neighborhood)) return false;
       if (housing && l.housing_type !== housing) return false;
       if (range.from && range.to) {
         const ok = l.availabilities.some(
@@ -59,9 +65,19 @@ function AnnoncesPage() {
       }
       return true;
     });
-  }, [listings, borough, neighborhood, housing, range]);
+  }, [listings, borough, neighborhoods, housing, range]);
 
-  const hasFilters = borough || neighborhood || housing || range.from || range.to;
+  const hasFilters =
+    borough || neighborhoods.length > 0 || housing || range.from || range.to;
+
+  const neighborhoodLabel =
+    neighborhoods.length === 0
+      ? borough
+        ? "Tous"
+        : "Choisir un borough"
+      : neighborhoods.length === 1
+        ? neighborhoods[0]
+        : `${neighborhoods.length} quartiers`;
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
