@@ -330,7 +330,10 @@ export const updateListingByManagementToken = createServerFn({ method: "POST" })
       .select("id")
       .eq("management_token", data.token)
       .maybeSingle();
-    if (findErr) throw new Error(findErr.message);
+    if (findErr) {
+      console.error("[listings] updateListing lookup failed", findErr);
+      throw new Error("Impossible de mettre à jour l'annonce pour le moment.");
+    }
     if (!existing) throw new Error("Lien de gestion invalide.");
 
     const { error: updErr } = await supabaseAdmin
@@ -342,13 +345,19 @@ export const updateListingByManagementToken = createServerFn({ method: "POST" })
         photos: data.photos,
       })
       .eq("id", existing.id);
-    if (updErr) throw new Error(updErr.message);
+    if (updErr) {
+      console.error("[listings] updateListing update failed", { id: existing.id, error: updErr });
+      throw new Error("Impossible de mettre à jour l'annonce pour le moment.");
+    }
 
     const { error: delErr } = await supabaseAdmin
       .from("listing_availabilities")
       .delete()
       .eq("listing_id", existing.id);
-    if (delErr) throw new Error(delErr.message);
+    if (delErr) {
+      console.error("[listings] updateListing delete availabilities failed", { id: existing.id, error: delErr });
+      throw new Error("Impossible de mettre à jour les disponibilités.");
+    }
 
     const { error: insErr } = await supabaseAdmin
       .from("listing_availabilities")
@@ -359,7 +368,11 @@ export const updateListingByManagementToken = createServerFn({ method: "POST" })
           end_date: a.end_date,
         })),
       );
-    if (insErr) throw new Error(insErr.message);
+    if (insErr) {
+      console.error("[listings] updateListing insert availabilities failed", { id: existing.id, error: insErr });
+      throw new Error("Impossible de mettre à jour les disponibilités.");
+    }
+
 
     return { ok: true as const };
   });
