@@ -92,6 +92,19 @@ export function boroughLabel(value: string | null | undefined): string {
   return BOROUGHS.find((b) => b.value === value)?.label ?? "";
 }
 
+export const LISTING_CATEGORIES = [
+  { value: "sejour_temporaire", label: "Séjour temporaire" },
+  { value: "reprise_bail", label: "Reprise de bail" },
+  { value: "colocation", label: "Colocation" },
+] as const;
+
+export type ListingCategory = (typeof LISTING_CATEGORIES)[number]["value"];
+
+export function categoryLabel(value: string | null | undefined): string {
+  if (!value) return "";
+  return LISTING_CATEGORIES.find((c) => c.value === value)?.label ?? "";
+}
+
 export function formatLocation(
   neighborhood: string | null | undefined,
   borough: string | null | undefined,
