@@ -30,7 +30,7 @@ export const Route = createFileRoute("/annonces/")({
       {
         name: "description",
         content:
-          "Toutes les annonces de sous-location temporaire partagées par la communauté française à New York. Filtrez par quartier, type de logement et dates.",
+          "Toutes les annonces de logements partagées par la communauté française à New York : séjours temporaires, reprises de bail, colocations. Filtrez par quartier, taille et dates.",
       },
     ],
   }),
@@ -88,8 +88,7 @@ function AnnoncesPage() {
         <div>
           <h1 className="font-serif text-4xl text-foreground md:text-5xl">Annonces</h1>
           <p className="mt-2 text-muted-foreground">
-            {listings.length} sous-location{listings.length > 1 ? "s" : ""} partagée
-            {listings.length > 1 ? "s" : ""} par la communauté.
+            Parcourez les logements proposés par la communauté française à New York, pour un séjour temporaire ou une reprise de bail.
           </p>
         </div>
         <Link

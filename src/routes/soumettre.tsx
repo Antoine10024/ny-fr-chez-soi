@@ -24,7 +24,7 @@ export const Route = createFileRoute("/soumettre")({
       {
         name: "description",
         content:
-          "Publie ton annonce de sous-location temporaire à New York en quelques minutes. Validation manuelle avant publication.",
+          "Publie ton annonce de logement à New York en quelques minutes — séjour temporaire, reprise de bail ou colocation. Validation manuelle avant publication.",
       },
     ],
   }),
