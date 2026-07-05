@@ -34,16 +34,24 @@ function Home() {
               Trouvez le logement qui vous convient
             </p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <div className="flex flex-col rounded-2xl border border-border bg-card/30 p-5">
-                <Luggage className="h-10 w-10 text-primary" />
+              <Link
+                to="/annonces"
+                search={{ category: "sejour_temporaire" }}
+                className="group flex flex-col rounded-2xl border border-border bg-card/30 p-5 transition hover:border-primary/30 hover:bg-card/60 active:scale-[0.98]"
+              >
+                <Luggage className="h-10 w-10 text-primary transition group-hover:scale-105" />
                 <h3 className="mt-4 font-serif text-base font-medium text-primary">Séjour temporaire</h3>
                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Pour trouver un logement le temps de votre séjour à New York.</p>
-              </div>
-              <div className="flex flex-col rounded-2xl border border-border bg-card/30 p-5">
-                <Key className="h-10 w-10 text-primary" />
+              </Link>
+              <Link
+                to="/annonces"
+                search={{ category: "reprise_bail" }}
+                className="group flex flex-col rounded-2xl border border-border bg-card/30 p-5 transition hover:border-primary/30 hover:bg-card/60 active:scale-[0.98]"
+              >
+                <Key className="h-10 w-10 text-primary transition group-hover:scale-105" />
                 <h3 className="mt-4 font-serif text-base font-medium text-primary">Reprise de bail</h3>
                 <p className="mt-1 text-sm leading-relaxed text-muted-foreground">Pour reprendre un bail existant et vous installer durablement à New York.</p>
-              </div>
+              </Link>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
