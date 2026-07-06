@@ -8,6 +8,15 @@ export function SiteFooter() {
           les règles de son immeuble et les modalités de contact avec
           l&apos;annonceur.
         </p>
+        <p className="mt-4 max-w-3xl leading-relaxed">
+          Contact :{" "}
+          <a
+            href="mailto:bonjour@logements.nyc"
+            className="text-primary underline underline-offset-2 transition hover:text-primary/80"
+          >
+            bonjour@logements.nyc
+          </a>
+        </p>
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3 text-xs">
           <span>© {new Date().getFullYear()} Logements NYC — projet communautaire, sans but commercial.</span>
           <span className="font-serif italic flex items-center gap-1.5">
