@@ -466,7 +466,6 @@ export const createInquiry = createServerFn({ method: "POST" })
     if (!fits) {
       throw new Error("Les dates choisies ne sont pas disponibles.");
     }
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inquiry, error } = await supabaseAdmin
       .from("listing_inquiries")
       .insert({
@@ -487,14 +486,14 @@ export const createInquiry = createServerFn({ method: "POST" })
 
 
     // Fetch owner email and listing context (server-only — never exposed to the visitor).
-    const { data: listing } = await supabaseAdmin
+    const { data: owner } = await supabaseAdmin
       .from("listings")
       .select("author_email, summary, neighborhood")
       .eq("id", data.listing_id)
       .eq("status", "approved")
       .maybeSingle();
 
-    if (!listing?.author_email) {
+    if (!owner?.author_email) {
       // Inquiry is recorded; surface a soft failure so the UI can inform the visitor.
       return { ok: true as const, emailSent: false as const };
     }
