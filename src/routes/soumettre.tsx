@@ -425,14 +425,12 @@ function SubmitPage() {
           >
             <input className={inputCls} {...register("summary")} />
           </FormField>
-          <FormField label="Description" error={errors.description?.message}>
-            <textarea rows={6} className={inputCls} {...register("description")} />
-          </FormField>
           <FormField
-            label="Informations pratiques (optionnel)"
-            hint="Wifi, lave-linge, vélo, animaux, étage…"
+            label="Description"
+            hint="Description, wifi, étage, lave-linge, métro…"
+            error={errors.description?.message}
           >
-            <textarea rows={3} className={inputCls} {...register("practical_info")} />
+            <textarea rows={6} className={inputCls} {...register("description")} />
           </FormField>
         </Section>
 
