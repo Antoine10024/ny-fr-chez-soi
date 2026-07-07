@@ -56,6 +56,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
   const [submitting, setSubmitting] = React.useState(false);
   const [done, setDone] = React.useState(false);
   const [emailSent, setEmailSent] = React.useState(true);
+  const [calendarOpen, setCalendarOpen] = React.useState(false);
 
   const submit = useServerFn(createInquiry);
 
@@ -66,6 +67,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
         setFirstName("");
         setEmail("");
         setRange(undefined);
+        setCalendarOpen(false);
         setMessage("");
         setDateError(null);
         setSubmitError(null);
@@ -93,9 +95,14 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
 
   const handleSelect = (r: DateRange | undefined) => {
     setDateError(null);
-    if (r?.from && r.to && !rangeFitsOnePeriod(r.from, r.to)) {
-      setDateError("Cette période chevauche des dates indisponibles. Choisis une période entièrement disponible.");
-      setRange({ from: r.from, to: undefined });
+    if (r?.from && r.to) {
+      if (!rangeFitsOnePeriod(r.from, r.to)) {
+        setDateError("Cette période chevauche des dates indisponibles. Choisis une période entièrement disponible.");
+        setRange({ from: r.from, to: undefined });
+        return;
+      }
+      setRange(r);
+      setCalendarOpen(false);
       return;
     }
     setRange(r);
@@ -213,7 +220,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
               <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Tes dates
               </h3>
-              <Popover>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     type="button"
