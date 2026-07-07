@@ -21,6 +21,7 @@ export interface ListingSubmissionAdminProps {
   summary?: string;
   availabilities?: string;
   listingId?: string;
+  moderationUrl?: string;
 }
 
 const main: React.CSSProperties = {
