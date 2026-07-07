@@ -67,6 +67,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
         setFirstName("");
         setEmail("");
         setRange(undefined);
+        setCalendarOpen(false);
         setMessage("");
         setDateError(null);
         setSubmitError(null);
