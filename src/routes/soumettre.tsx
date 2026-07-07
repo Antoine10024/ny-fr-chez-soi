@@ -368,8 +368,10 @@ function SubmitPage() {
                         });
                       }}
                       placeholder="Choisir les dates"
+                      numberOfMonths={isMobile ? 1 : 2}
                       minDate={new Date()}
                     />
+
                     {err?.start_date?.message ? (
                       <span className="mt-1 block text-xs text-destructive">
                         {err.start_date.message}
