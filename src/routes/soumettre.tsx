@@ -86,7 +86,9 @@ type FormValues = z.infer<typeof schema>;
 
 function SubmitPage() {
   const submit = useServerFn(submitListing);
+  const isMobile = useIsMobile();
   const [photos, setPhotos] = useState<string[]>([]);
+
   const [uploading, setUploading] = useState(false);
   const [managementToken, setManagementToken] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
