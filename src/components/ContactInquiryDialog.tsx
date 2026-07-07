@@ -95,9 +95,14 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
 
   const handleSelect = (r: DateRange | undefined) => {
     setDateError(null);
-    if (r?.from && r.to && !rangeFitsOnePeriod(r.from, r.to)) {
-      setDateError("Cette période chevauche des dates indisponibles. Choisis une période entièrement disponible.");
-      setRange({ from: r.from, to: undefined });
+    if (r?.from && r.to) {
+      if (!rangeFitsOnePeriod(r.from, r.to)) {
+        setDateError("Cette période chevauche des dates indisponibles. Choisis une période entièrement disponible.");
+        setRange({ from: r.from, to: undefined });
+        return;
+      }
+      setRange(r);
+      setCalendarOpen(false);
       return;
     }
     setRange(r);
