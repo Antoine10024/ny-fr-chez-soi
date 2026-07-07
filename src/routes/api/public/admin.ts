@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { formatCalendarDate } from "@/lib/listing-constants";
 
 function esc(s: string): string {
   return s.replace(/[&<>"']/g, (c) =>
@@ -6,11 +7,6 @@ function esc(s: string): string {
   );
 }
 
-const dateFmt = new Intl.DateTimeFormat("fr-FR", {
-  day: "numeric",
-  month: "short",
-  year: "numeric",
-});
 
 export const Route = createFileRoute("/api/public/admin")({
   server: {
