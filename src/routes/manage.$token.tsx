@@ -112,7 +112,7 @@ const formSchema = z.object({
     .trim()
     .min(20, "La description doit faire au moins 20 caractères")
     .max(4000),
-  practical_info: z.string().trim().max(2000).optional(),
+  
   availabilities: z
     .array(availabilitySchema)
     .min(1, "Ajoute au moins une période")
