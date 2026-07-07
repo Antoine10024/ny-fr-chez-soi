@@ -85,6 +85,14 @@ const button: React.CSSProperties = {
   display: "inline-block",
 };
 
+const secondaryButton: React.CSSProperties = {
+  ...button,
+  backgroundColor: "#ffffff",
+  color: "#1b1b1f",
+  border: "1px solid #d6d3d1",
+  marginLeft: "8px",
+};
+
 const Email = ({
   authorName,
   authorEmail,
@@ -94,6 +102,7 @@ const Email = ({
   availabilities,
   listingId,
   moderationUrl,
+  listingUrl,
 }: ListingSubmissionAdminProps) => (
   <Html lang="fr" dir="ltr">
     <Head />
@@ -105,11 +114,18 @@ const Email = ({
           Une nouvelle annonce a été soumise et est en attente de modération.
         </Text>
 
-        {moderationUrl ? (
+        {moderationUrl || listingUrl ? (
           <Section style={{ margin: "20px 0 8px" }}>
-            <Button href={moderationUrl} style={button}>
-              Voir et modérer l&apos;annonce
-            </Button>
+            {moderationUrl ? (
+              <Button href={moderationUrl} style={button}>
+                Voir et modérer l&apos;annonce
+              </Button>
+            ) : null}
+            {listingUrl ? (
+              <Button href={listingUrl} style={secondaryButton}>
+                Voir l&apos;annonce
+              </Button>
+            ) : null}
           </Section>
         ) : null}
 
