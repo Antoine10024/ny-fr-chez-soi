@@ -248,7 +248,7 @@ function ManagePage() {
         reset({
           summary: fresh.summary,
           description: fresh.description,
-          practical_info: fresh.practical_info ?? "",
+          
           availabilities: fresh.availabilities.map((a) => ({
             start_date: a.start_date,
             end_date: a.end_date,
