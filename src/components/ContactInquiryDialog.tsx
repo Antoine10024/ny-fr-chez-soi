@@ -118,6 +118,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
     if (!range?.from || !range?.to) {
       setDateError("Choisis tes dates d'arrivée et de départ.");
       return;
@@ -141,7 +142,13 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
       setEmailSent(res?.emailSent !== false);
       setDone(true);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Une erreur est survenue.");
+      console.error("[ContactInquiryDialog] submit failed", err);
+      const message =
+        err instanceof Error && err.message
+          ? err.message
+          : "Impossible d'envoyer ton message pour le moment. Merci de réessayer.";
+      setSubmitError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
