@@ -123,25 +123,47 @@ const longFmt = new Intl.DateTimeFormat("fr-FR", {
 });
 const shortFmt = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" });
 
-// Parse an ISO "YYYY-MM-DD" as a local calendar date (no timezone shift).
-// `new Date("YYYY-MM-DD")` is interpreted as UTC midnight and would display
-// as the previous day in timezones west of UTC.
-function parseISODateLocal(iso: string): Date {
+// -----------------------------------------------------------------------------
+// Calendar date utilities.
+//
+// Availabilities (`start_date`, `end_date`) are calendar dates in the
+// `YYYY-MM-DD` format — NOT timestamps. They must never be parsed with
+// `new Date("YYYY-MM-DD")` (interpreted as UTC midnight and shifted by the
+// local timezone) nor serialized with `toISOString()` (converted to UTC).
+//
+// Use ONLY these helpers throughout the app (forms, cards, filters, emails,
+// admin pages, etc.):
+//   - `parseCalendarDate(iso)`   → local `Date` at midnight, safe to format
+//   - `toCalendarDateString(d)`  → `YYYY-MM-DD` from a local `Date`
+//   - `formatCalendarDate(iso)`  → human string "7 sept. 2026"
+//   - `formatDateRange(a, b)`    → "Du … au …"
+//   - `formatShortDateRange(a,b)`→ "… → …"
+// -----------------------------------------------------------------------------
+
+export function parseCalendarDate(iso: string): Date {
   const [y, m, d] = iso.split("-").map((n) => parseInt(n, 10));
   return new Date(y, (m || 1) - 1, d || 1);
 }
 
-export function formatDateRange(start: string, end: string): string {
-  return `Du ${longFmt.format(parseISODateLocal(start))} au ${longFmt.format(parseISODateLocal(end))}`;
-}
-
-export function formatShortDateRange(start: string, end: string): string {
-  return `${shortFmt.format(parseISODateLocal(start))} → ${shortFmt.format(parseISODateLocal(end))}`;
-}
-
-export function formatISODate(d: Date): string {
+export function toCalendarDateString(d: Date): string {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 }
+
+export function formatCalendarDate(iso: string): string {
+  return longFmt.format(parseCalendarDate(iso));
+}
+
+export function formatDateRange(start: string, end: string): string {
+  return `Du ${formatCalendarDate(start)} au ${formatCalendarDate(end)}`;
+}
+
+export function formatShortDateRange(start: string, end: string): string {
+  return `${shortFmt.format(parseCalendarDate(start))} → ${shortFmt.format(parseCalendarDate(end))}`;
+}
+
+// Backwards-compatible alias — prefer `toCalendarDateString` in new code.
+export const formatISODate = toCalendarDateString;
+
