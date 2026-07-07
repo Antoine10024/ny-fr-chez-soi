@@ -427,9 +427,27 @@ const inquirySchema = z.object({
 export const createInquiry = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inquirySchema.parse(input))
   .handler(async ({ data }) => {
-    const supabase = serverClient();
-    // Verify requested range fits fully within one availability of the approved listing.
-    const { data: avails, error: aErr } = await supabase
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // Verify requested range fits fully within one availability of an approved listing.
+    // Uses the admin client because the RLS policy on listing_availabilities joins to
+    // public.listings, which the anon role has no SELECT grant on (public reads go
+    // through the public_listings view). This is a server-side validation, not a
+    // user-scoped read.
+    const { data: listing, error: lErr } = await supabaseAdmin
+      .from("listings")
+      .select("id, status")
+      .eq("id", data.listing_id)
+      .eq("status", "approved")
+      .maybeSingle();
+    if (lErr) {
+      console.error("[listings] createInquiry listing lookup failed", { listing_id: data.listing_id, error: lErr });
+      throw new Error("Impossible d'envoyer ton message pour le moment. Merci de réessayer.");
+    }
+    if (!listing) {
+      throw new Error("Cette annonce n'est plus disponible.");
+    }
+
+    const { data: avails, error: aErr } = await supabaseAdmin
       .from("listing_availabilities")
       .select("start_date, end_date, status")
       .eq("listing_id", data.listing_id);
@@ -448,7 +466,6 @@ export const createInquiry = createServerFn({ method: "POST" })
     if (!fits) {
       throw new Error("Les dates choisies ne sont pas disponibles.");
     }
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: inquiry, error } = await supabaseAdmin
       .from("listing_inquiries")
       .insert({
@@ -469,14 +486,14 @@ export const createInquiry = createServerFn({ method: "POST" })
 
 
     // Fetch owner email and listing context (server-only — never exposed to the visitor).
-    const { data: listing } = await supabaseAdmin
+    const { data: owner } = await supabaseAdmin
       .from("listings")
       .select("author_email, summary, neighborhood")
       .eq("id", data.listing_id)
       .eq("status", "approved")
       .maybeSingle();
 
-    if (!listing?.author_email) {
+    if (!owner?.author_email) {
       // Inquiry is recorded; surface a soft failure so the UI can inform the visitor.
       return { ok: true as const, emailSent: false as const };
     }
@@ -489,7 +506,7 @@ export const createInquiry = createServerFn({ method: "POST" })
       };
       await sendTemplatedEmail({
         templateName: "inquiry-notification",
-        to: listing.author_email,
+        to: owner.author_email,
         replyTo: data.visitor_email,
         idempotencyKey: `inquiry-${inquiry.id}`,
         bcc: true,
@@ -499,8 +516,8 @@ export const createInquiry = createServerFn({ method: "POST" })
           startDate: fmt(data.start_date),
           endDate: fmt(data.end_date),
           message: data.message,
-          listingSummary: listing.summary,
-          listingNeighborhood: listing.neighborhood,
+          listingSummary: owner.summary,
+          listingNeighborhood: owner.neighborhood,
         },
       });
       return { ok: true as const, emailSent: true as const };
