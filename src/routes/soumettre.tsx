@@ -7,6 +7,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { submitListing } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { compressImageIfNeeded } from "@/lib/compress-image";
 import { DateRangePicker } from "@/components/DateRangePicker";
 import {
   BOROUGHS,
