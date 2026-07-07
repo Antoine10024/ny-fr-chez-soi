@@ -67,7 +67,6 @@ const schema = z.object({
     .trim()
     .min(20, "La description doit faire au moins 20 caractères")
     .max(4000),
-  practical_info: z.string().trim().max(2000).optional(),
 }).superRefine((v, ctx) => {
   if (v.neighborhood_choice === OTHER_NEIGHBORHOOD) {
     const custom = (v.neighborhood_custom ?? "").trim();
@@ -162,7 +161,7 @@ function SubmitPage() {
           availabilities: values.availabilities,
           summary: values.summary,
           description: values.description,
-          practical_info: values.practical_info || "",
+          practical_info: "",
           photos,
         },
       });
@@ -426,14 +425,12 @@ function SubmitPage() {
           >
             <input className={inputCls} {...register("summary")} />
           </FormField>
-          <FormField label="Description" error={errors.description?.message}>
-            <textarea rows={6} className={inputCls} {...register("description")} />
-          </FormField>
           <FormField
-            label="Informations pratiques (optionnel)"
-            hint="Wifi, lave-linge, vélo, animaux, étage…"
+            label="Description"
+            hint="Description, wifi, étage, lave-linge, métro…"
+            error={errors.description?.message}
           >
-            <textarea rows={3} className={inputCls} {...register("practical_info")} />
+            <textarea rows={6} className={inputCls} {...register("description")} />
           </FormField>
         </Section>
 

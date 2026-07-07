@@ -119,18 +119,11 @@ function ListingDetail() {
           <section className="mt-8">
             <h2 className="font-serif text-xl text-foreground">Description</h2>
             <p className="mt-3 whitespace-pre-line leading-relaxed text-foreground/90">
-              {listing.description}
+              {listing.practical_info
+                ? `${listing.description}\n\n${listing.practical_info}`
+                : listing.description}
             </p>
           </section>
-
-          {listing.practical_info ? (
-            <section className="mt-8">
-              <h2 className="font-serif text-xl text-foreground">Informations pratiques</h2>
-              <p className="mt-3 whitespace-pre-line leading-relaxed text-foreground/90">
-                {listing.practical_info}
-              </p>
-            </section>
-          ) : null}
         </article>
 
         <aside className="md:sticky md:top-24 md:self-start">

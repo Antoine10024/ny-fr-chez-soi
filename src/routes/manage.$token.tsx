@@ -112,7 +112,7 @@ const formSchema = z.object({
     .trim()
     .min(20, "La description doit faire au moins 20 caractères")
     .max(4000),
-  practical_info: z.string().trim().max(2000).optional(),
+  
   availabilities: z
     .array(availabilitySchema)
     .min(1, "Ajoute au moins une période")
@@ -163,8 +163,11 @@ function ManagePage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       summary: listing?.summary ?? "",
-      description: listing?.description ?? "",
-      practical_info: listing?.practical_info ?? "",
+      description: listing
+        ? listing.practical_info
+          ? `${listing.description}\n\n${listing.practical_info}`
+          : listing.description
+        : "",
       availabilities:
         listing?.availabilities.map((a) => ({
           start_date: a.start_date,
@@ -234,7 +237,7 @@ function ManagePage() {
           token,
           summary: values.summary,
           description: values.description,
-          practical_info: values.practical_info || "",
+          practical_info: "",
           photos: photos.map((p) => p.path),
           availabilities: values.availabilities,
         },
@@ -245,7 +248,7 @@ function ManagePage() {
         reset({
           summary: fresh.summary,
           description: fresh.description,
-          practical_info: fresh.practical_info ?? "",
+          
           availabilities: fresh.availabilities.map((a) => ({
             start_date: a.start_date,
             end_date: a.end_date,
@@ -360,19 +363,12 @@ function ManagePage() {
           <FormField label="Titre" error={errors.summary?.message}>
             <input className={inputCls} {...register("summary")} />
           </FormField>
-          <FormField label="Description" error={errors.description?.message}>
-            <textarea rows={6} className={inputCls} {...register("description")} />
-          </FormField>
           <FormField
-            label="Informations pratiques (optionnel)"
-            hint="Wifi, lave-linge, vélo, animaux, étage…"
-            error={errors.practical_info?.message}
+            label="Description"
+            hint="Description, wifi, étage, lave-linge, métro…"
+            error={errors.description?.message}
           >
-            <textarea
-              rows={3}
-              className={inputCls}
-              {...register("practical_info")}
-            />
+            <textarea rows={6} className={inputCls} {...register("description")} />
           </FormField>
         </Section>
 
