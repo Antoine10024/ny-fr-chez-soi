@@ -223,7 +223,7 @@ export const submitListing = createServerFn({ method: "POST" })
     // Send admin notification about the new pending listing.
     try {
       const { sendTemplatedEmail } = await import("@/lib/email/send.server");
-      const { ADMIN_EMAIL_ADDRESS } = await import("@/lib/email/config.server");
+      const { ADMIN_EMAIL_ADDRESS, SITE_URL } = await import("@/lib/email/config.server");
       const housingLabels: Record<string, string> = {
         chambre: "Chambre",
         studio: "Studio",
@@ -238,6 +238,10 @@ export const submitListing = createServerFn({ method: "POST" })
       const availabilitiesText = data.availabilities
         .map((a) => `du ${fmt(a.start_date)} au ${fmt(a.end_date)}`)
         .join("\n");
+      const adminSecret = process.env.ADMIN_MODERATION_SECRET;
+      const moderationUrl = adminSecret
+        ? `${SITE_URL}/api/public/admin?secret=${encodeURIComponent(adminSecret)}`
+        : undefined;
       await sendTemplatedEmail({
         templateName: "listing-submission-admin",
         to: ADMIN_EMAIL_ADDRESS,
@@ -250,6 +254,7 @@ export const submitListing = createServerFn({ method: "POST" })
           summary: data.summary,
           availabilities: availabilitiesText,
           listingId: row.id,
+          moderationUrl,
         },
       });
     } catch (err) {
