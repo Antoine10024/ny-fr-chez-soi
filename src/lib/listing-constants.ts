@@ -123,12 +123,20 @@ const longFmt = new Intl.DateTimeFormat("fr-FR", {
 });
 const shortFmt = new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" });
 
+// Parse an ISO "YYYY-MM-DD" as a local calendar date (no timezone shift).
+// `new Date("YYYY-MM-DD")` is interpreted as UTC midnight and would display
+// as the previous day in timezones west of UTC.
+function parseISODateLocal(iso: string): Date {
+  const [y, m, d] = iso.split("-").map((n) => parseInt(n, 10));
+  return new Date(y, (m || 1) - 1, d || 1);
+}
+
 export function formatDateRange(start: string, end: string): string {
-  return `Du ${longFmt.format(new Date(start))} au ${longFmt.format(new Date(end))}`;
+  return `Du ${longFmt.format(parseISODateLocal(start))} au ${longFmt.format(parseISODateLocal(end))}`;
 }
 
 export function formatShortDateRange(start: string, end: string): string {
-  return `${shortFmt.format(new Date(start))} → ${shortFmt.format(new Date(end))}`;
+  return `${shortFmt.format(parseISODateLocal(start))} → ${shortFmt.format(parseISODateLocal(end))}`;
 }
 
 export function formatISODate(d: Date): string {
