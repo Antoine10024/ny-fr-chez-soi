@@ -16,6 +16,7 @@ import {
   withdrawListingByManagementToken,
 } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { compressImageIfNeeded } from "@/lib/compress-image";
 import { DateRangePicker } from "@/components/DateRangePicker";
 import { categoryLabel, formatLocation, housingLabel } from "@/lib/listing-constants";
 import {
