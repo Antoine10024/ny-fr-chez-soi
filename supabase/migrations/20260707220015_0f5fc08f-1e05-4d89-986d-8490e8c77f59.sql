@@ -1,0 +1,1 @@
+UPDATE public.listings SET photos = ARRAY['https://images.unsplash.com/photo-1567767292278-a4f21aa2d36e?w=1200'] WHERE id='72928d23-196a-4ba4-a775-20b2fa357c8a';
