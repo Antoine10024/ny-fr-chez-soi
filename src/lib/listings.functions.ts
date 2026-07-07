@@ -506,7 +506,7 @@ export const createInquiry = createServerFn({ method: "POST" })
       };
       await sendTemplatedEmail({
         templateName: "inquiry-notification",
-        to: listing.author_email,
+        to: owner.author_email,
         replyTo: data.visitor_email,
         idempotencyKey: `inquiry-${inquiry.id}`,
         bcc: true,
@@ -516,8 +516,8 @@ export const createInquiry = createServerFn({ method: "POST" })
           startDate: fmt(data.start_date),
           endDate: fmt(data.end_date),
           message: data.message,
-          listingSummary: listing.summary,
-          listingNeighborhood: listing.neighborhood,
+          listingSummary: owner.summary,
+          listingNeighborhood: owner.neighborhood,
         },
       });
       return { ok: true as const, emailSent: true as const };
