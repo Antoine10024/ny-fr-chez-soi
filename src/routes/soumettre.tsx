@@ -7,6 +7,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { submitListing } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
+import { compressImageIfNeeded } from "@/lib/compress-image";
 import { DateRangePicker } from "@/components/DateRangePicker";
 import {
   BOROUGHS,
@@ -121,18 +122,24 @@ function SubmitPage() {
     setUploading(true);
     const newPaths: string[] = [];
     try {
-      for (const file of Array.from(files).slice(0, 10 - photos.length)) {
+      for (const original of Array.from(files).slice(0, 10 - photos.length)) {
+        let file = original;
+        try {
+          file = await compressImageIfNeeded(original);
+        } catch {
+          file = original;
+        }
         if (file.size > 8 * 1024 * 1024) {
-          alert(`Le fichier ${file.name} dépasse 8 Mo`);
+          alert(`Le fichier ${original.name} est trop volumineux, même après compression (max 8 Mo).`);
           continue;
         }
-        const ext = file.name.split(".").pop() ?? "jpg";
+        const ext = (file.name.split(".").pop() ?? "jpg").toLowerCase();
         const path = `${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage
           .from("listing-photos")
           .upload(path, file, { contentType: file.type, upsert: false });
         if (error) {
-          alert(`Échec d'envoi de ${file.name}: ${error.message}`);
+          alert(`Échec d'envoi de ${original.name}: ${error.message}`);
           continue;
         }
         newPaths.push(path);
