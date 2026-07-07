@@ -259,6 +259,15 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
               />
             </section>
 
+            {submitError ? (
+              <div
+                role="alert"
+                className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
+              >
+                {submitError}
+              </div>
+            ) : null}
+
             <DialogFooter className="gap-2 sm:gap-2">
               <Button
                 type="button"
