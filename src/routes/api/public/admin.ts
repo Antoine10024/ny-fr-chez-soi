@@ -33,7 +33,7 @@ export const Route = createFileRoute("/api/public/admin")({
             const periods = (r.listing_availabilities ?? [])
               .map(
                 (a) =>
-                  `${dateFmt.format(new Date(a.start_date))} → ${dateFmt.format(new Date(a.end_date))}`,
+                  `${formatCalendarDate(a.start_date)} → ${formatCalendarDate(a.end_date)}`,
               )
               .join(" · ");
             return `
