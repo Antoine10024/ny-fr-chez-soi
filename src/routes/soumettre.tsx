@@ -67,7 +67,6 @@ const schema = z.object({
     .trim()
     .min(20, "La description doit faire au moins 20 caractères")
     .max(4000),
-  practical_info: z.string().trim().max(2000).optional(),
 }).superRefine((v, ctx) => {
   if (v.neighborhood_choice === OTHER_NEIGHBORHOOD) {
     const custom = (v.neighborhood_custom ?? "").trim();
