@@ -237,7 +237,7 @@ function ManagePage() {
           token,
           summary: values.summary,
           description: values.description,
-          practical_info: values.practical_info || "",
+          practical_info: "",
           photos: photos.map((p) => p.path),
           availabilities: values.availabilities,
         },
