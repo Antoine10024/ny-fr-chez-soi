@@ -21,6 +21,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { formatISODate, formatShortDateRange } from "@/lib/listing-constants";
 import { createInquiry } from "@/lib/listings.functions";
 import type { Availability } from "@/lib/listings.functions";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 
 interface Props {
   listingId: string;
@@ -60,6 +62,8 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
   const [draft, setDraft] = React.useState<DateRange | undefined>();
 
   const submit = useServerFn(createInquiry);
+  const isMobile = useIsMobile();
+
 
   React.useEffect(() => {
     if (calendarOpen) {
@@ -263,7 +267,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
                     mode="range"
                     selected={draft}
                     onSelect={handleSelect}
-                    numberOfMonths={2}
+                    numberOfMonths={isMobile ? 1 : 2}
                     disabled={(d) => !isDateBookable(d)}
                     defaultMonth={bookable[0]?.from}
                     className="pointer-events-auto p-3"
