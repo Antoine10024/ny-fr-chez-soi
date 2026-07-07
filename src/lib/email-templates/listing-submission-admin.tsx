@@ -178,5 +178,6 @@ export const template = {
     availabilities: "12 juil. 2026 – 20 juil. 2026",
     listingId: "00000000-0000-0000-0000-000000000000",
     moderationUrl: "https://www.logements.nyc/api/public/admin?secret=xxx",
+    listingUrl: "https://www.logements.nyc/manage/00000000-0000-0000-0000-000000000000",
   },
 } satisfies TemplateEntry;
