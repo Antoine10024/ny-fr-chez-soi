@@ -242,6 +242,7 @@ export const submitListing = createServerFn({ method: "POST" })
       const moderationUrl = adminSecret
         ? `${SITE_URL}/api/public/admin?secret=${encodeURIComponent(adminSecret)}`
         : undefined;
+      const listingUrl = `${SITE_URL}/manage/${row.management_token}`;
       await sendTemplatedEmail({
         templateName: "listing-submission-admin",
         to: ADMIN_EMAIL_ADDRESS,
@@ -255,6 +256,7 @@ export const submitListing = createServerFn({ method: "POST" })
           availabilities: availabilitiesText,
           listingId: row.id,
           moderationUrl,
+          listingUrl,
         },
       });
     } catch (err) {
