@@ -9,6 +9,8 @@ import { submitListing } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImageIfNeeded } from "@/lib/compress-image";
 import { DateRangePicker } from "@/components/DateRangePicker";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 import {
   BOROUGHS,
   HOUSING_TYPES,
