@@ -9,6 +9,8 @@ import { submitListing } from "@/lib/listings.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { compressImageIfNeeded } from "@/lib/compress-image";
 import { DateRangePicker } from "@/components/DateRangePicker";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 import {
   BOROUGHS,
   HOUSING_TYPES,
@@ -84,7 +86,9 @@ type FormValues = z.infer<typeof schema>;
 
 function SubmitPage() {
   const submit = useServerFn(submitListing);
+  const isMobile = useIsMobile();
   const [photos, setPhotos] = useState<string[]>([]);
+
   const [uploading, setUploading] = useState(false);
   const [managementToken, setManagementToken] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -364,8 +368,10 @@ function SubmitPage() {
                         });
                       }}
                       placeholder="Choisir les dates"
+                      numberOfMonths={isMobile ? 1 : 2}
                       minDate={new Date()}
                     />
+
                     {err?.start_date?.message ? (
                       <span className="mt-1 block text-xs text-destructive">
                         {err.start_date.message}
