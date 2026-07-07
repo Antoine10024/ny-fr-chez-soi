@@ -73,6 +73,17 @@ const footer: React.CSSProperties = {
   marginTop: "24px",
 };
 
+const button: React.CSSProperties = {
+  backgroundColor: "#c2410c",
+  color: "#ffffff",
+  padding: "12px 20px",
+  borderRadius: "999px",
+  fontSize: "14px",
+  fontWeight: 500,
+  textDecoration: "none",
+  display: "inline-block",
+};
+
 const Email = ({
   authorName,
   authorEmail,
@@ -81,6 +92,7 @@ const Email = ({
   summary,
   availabilities,
   listingId,
+  moderationUrl,
 }: ListingSubmissionAdminProps) => (
   <Html lang="fr" dir="ltr">
     <Head />
@@ -91,6 +103,14 @@ const Email = ({
         <Text style={value}>
           Une nouvelle annonce a été soumise et est en attente de modération.
         </Text>
+
+        {moderationUrl ? (
+          <Section style={{ margin: "20px 0 8px" }}>
+            <Button href={moderationUrl} style={button}>
+              Voir et modérer l&apos;annonce
+            </Button>
+          </Section>
+        ) : null}
 
         <Text style={label}>Titre</Text>
         <Text style={value}>{summary ?? "—"}</Text>
