@@ -163,8 +163,11 @@ function ManagePage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       summary: listing?.summary ?? "",
-      description: listing?.description ?? "",
-      practical_info: listing?.practical_info ?? "",
+      description: listing
+        ? listing.practical_info
+          ? `${listing.description}\n\n${listing.practical_info}`
+          : listing.description
+        : "",
       availabilities:
         listing?.availabilities.map((a) => ({
           start_date: a.start_date,
