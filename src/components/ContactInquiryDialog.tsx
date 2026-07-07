@@ -220,7 +220,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
               <h3 className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Tes dates
               </h3>
-              <Popover>
+              <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                 <PopoverTrigger asChild>
                   <Button
                     type="button"
