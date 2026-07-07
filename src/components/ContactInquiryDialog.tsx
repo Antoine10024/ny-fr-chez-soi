@@ -52,6 +52,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
   const [range, setRange] = React.useState<DateRange | undefined>();
   const [message, setMessage] = React.useState("");
   const [dateError, setDateError] = React.useState<string | null>(null);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
   const [submitting, setSubmitting] = React.useState(false);
   const [done, setDone] = React.useState(false);
   const [emailSent, setEmailSent] = React.useState(true);
@@ -67,6 +68,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
         setRange(undefined);
         setMessage("");
         setDateError(null);
+        setSubmitError(null);
         setDone(false);
         setSubmitting(false);
       }, 200);
@@ -116,6 +118,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSubmitError(null);
     if (!range?.from || !range?.to) {
       setDateError("Choisis tes dates d'arrivée et de départ.");
       return;
@@ -139,7 +142,13 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
       setEmailSent(res?.emailSent !== false);
       setDone(true);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Une erreur est survenue.");
+      console.error("[ContactInquiryDialog] submit failed", err);
+      const message =
+        err instanceof Error && err.message
+          ? err.message
+          : "Impossible d'envoyer ton message pour le moment. Merci de réessayer.";
+      setSubmitError(message);
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -249,6 +258,15 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
                 required
               />
             </section>
+
+            {submitError ? (
+              <div
+                role="alert"
+                className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
+              >
+                {submitError}
+              </div>
+            ) : null}
 
             <DialogFooter className="gap-2 sm:gap-2">
               <Button
