@@ -161,7 +161,7 @@ function SubmitPage() {
           availabilities: values.availabilities,
           summary: values.summary,
           description: values.description,
-          practical_info: values.practical_info || "",
+          practical_info: "",
           photos,
         },
       });
