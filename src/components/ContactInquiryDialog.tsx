@@ -57,8 +57,16 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
   const [done, setDone] = React.useState(false);
   const [emailSent, setEmailSent] = React.useState(true);
   const [calendarOpen, setCalendarOpen] = React.useState(false);
+  const [draft, setDraft] = React.useState<DateRange | undefined>();
 
   const submit = useServerFn(createInquiry);
+
+  React.useEffect(() => {
+    if (calendarOpen) {
+      setDraft(range);
+    }
+  }, [calendarOpen, range]);
+
 
   React.useEffect(() => {
     if (!open) {
@@ -67,6 +75,7 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
         setFirstName("");
         setEmail("");
         setRange(undefined);
+        setDraft(undefined);
         setCalendarOpen(false);
         setMessage("");
         setDateError(null);
@@ -95,17 +104,32 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
 
   const handleSelect = (r: DateRange | undefined) => {
     setDateError(null);
-    if (r?.from && r.to) {
-      if (!rangeFitsOnePeriod(r.from, r.to)) {
-        setDateError("Cette période chevauche des dates indisponibles. Choisis une période entièrement disponible.");
-        setRange({ from: r.from, to: undefined });
-        return;
-      }
-      setRange(r);
-      setCalendarOpen(false);
+    if (r?.from && r.to && !rangeFitsOnePeriod(r.from, r.to)) {
+      setDateError("Cette période chevauche des dates indisponibles. Choisis une période entièrement disponible.");
+      setDraft({ from: r.from, to: undefined });
       return;
     }
-    setRange(r);
+    setDraft(r);
+  };
+
+  const applyDates = () => {
+    if (!draft?.from || !draft.to) {
+      setDateError("Choisis une date de début et une date de fin.");
+      return;
+    }
+    if (!rangeFitsOnePeriod(draft.from, draft.to)) {
+      setDateError("Cette période chevauche des dates indisponibles.");
+      return;
+    }
+    setRange(draft);
+    setCalendarOpen(false);
+  };
+
+  const resetDates = () => {
+    setDraft(undefined);
+    setRange(undefined);
+    setDateError(null);
+    setCalendarOpen(false);
   };
 
   const rangeLabel =
@@ -237,13 +261,30 @@ export function ContactInquiryDialog({ listingId, availabilities, open, onOpenCh
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="range"
-                    selected={range}
+                    selected={draft}
                     onSelect={handleSelect}
                     numberOfMonths={2}
                     disabled={(d) => !isDateBookable(d)}
                     defaultMonth={bookable[0]?.from}
                     className="pointer-events-auto p-3"
                   />
+                  <div className="flex items-center justify-between gap-2 border-t border-border px-3 py-2">
+                    <button
+                      type="button"
+                      onClick={resetDates}
+                      className="text-xs text-muted-foreground hover:text-foreground"
+                    >
+                      Réinitialiser
+                    </button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      onClick={applyDates}
+                      disabled={!draft?.from || !draft?.to}
+                    >
+                      Valider
+                    </Button>
+                  </div>
                 </PopoverContent>
               </Popover>
               <p className="text-xs text-muted-foreground">
